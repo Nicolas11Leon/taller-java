@@ -6,7 +6,7 @@ Proyecto de laboratorio que implementa una arquitectura limpia/hexagonal (Puerto
 
 ---
 
-## 📋 Modelo de Datos
+## Modelo de Datos
 
 El sistema implementa el CRUD completo para las siguientes entidades relacionadas:
 
@@ -17,7 +17,7 @@ El sistema implementa el CRUD completo para las siguientes entidades relacionada
 
 ---
 
-## 🏛️ Arquitectura del Sistema (Hexagonal / Clean Architecture)
+## Arquitectura del Sistema (Hexagonal / Clean Architecture)
 
 El proyecto está modularizado utilizando Maven multi-módulo:
 
@@ -35,7 +35,7 @@ El proyecto está modularizado utilizando Maven multi-módulo:
 
 ---
 
-## 🐳 Despliegue 100% Contenerizado (Docker & Docker Compose)
+## Despliegue 100% Contenerizado (Docker & Docker Compose)
 
 ### 1. Requisitos
 * **Docker Engine** (versión 20.10+)
@@ -68,11 +68,11 @@ docker compose logs -f rest-api
 
 ---
 
-## 🌐 Documentación Interactiva Swagger / OpenAPI 3
+## Documentación Interactiva Swagger / OpenAPI 3
 
 Una vez levantado el entorno con Docker, accede directamente desde el navegador:
 
-👉 **[http://localhost:3000/swagger-ui.html](http://localhost:3000/swagger-ui.html)**
+**[http://localhost:3000/swagger-ui.html](http://localhost:3000/swagger-ui.html)**
 
 ### Endpoints Disponibles:
 
@@ -107,7 +107,7 @@ Todos los endpoints admiten la selección del motor de persistencia (`MARIA` o `
 
 ---
 
-## 💻 Ejecución del Adaptador CLI (Consola Interactiva Contenerizada)
+## Ejecución del Adaptador CLI (Consola Interactiva Contenerizada)
 
 Para ejecutar la aplicación de consola interactiva dentro de su propio contenedor Docker conectado a la red interna:
 
@@ -132,7 +132,7 @@ Cada submódulo permite seleccionar el motor de persistencia (`1: MariaDB`, `2: 
 
 ---
 
-## 🧪 Pruebas Automáticas y Colección Postman
+## Pruebas Automáticas y Colección Postman
 
 ### 1. Script de Pruebas Automáticas en Bash
 Con los contenedores arriba, ejecuta en una sola línea la verificación completa de los 24 endpoints:
@@ -149,7 +149,7 @@ Importa en Postman el archivo `postman_collection.json` incluido en la raíz del
 
 ---
 
-## 🛑 Detener los Contenedores
+## Detener los Contenedores
 
 Para apagar todos los servicios:
 ```bash
@@ -163,7 +163,7 @@ docker compose down -v
 
 ---
 
-## 👥 Colaboradores
+## Colaboradores
 
 * **Nicolás León Parra** - [`Nicolas11Leon`](https://github.com/Nicolas11Leon)
 * **Warrior baby** - [`Warriorr89`](https://github.com/Warriorr89)
