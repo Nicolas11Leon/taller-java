@@ -100,16 +100,26 @@ El software se estructuró en 7 módulos independientes:
 
 4. **Implementación del Adaptador REST (OpenAPI / Swagger 3):**
    * Se construyeron los controladores `PersonaControllerV1`, `ProfesionControllerV1`, `TelefonoControllerV1` y `EstudiosControllerV1`.
-   * Se documentaron todos los métodos mediante `@Operation` y `@Tag` para su visualización en Swagger UI.
+   * Se implementaron estrictamente **6 métodos por entidad (3 de lectura y 3 de escritura)**:
+     * *Lectura 1:* Listar todos (`GET /{recurso}/{database}`)
+     * *Lectura 2:* Buscar por llave primaria (`GET /{recurso}/{database}/{id}`)
+     * *Lectura 3:* Contar cantidad total (`GET /{recurso}/{database}/count`)
+     * *Escritura 1:* Crear nuevo registro (`POST /{recurso}`)
+     * *Escritura 2:* Editar registro existente (`PUT /{recurso}/{database}/{id}`)
+     * *Escritura 3:* Eliminar registro (`DELETE /{recurso}/{database}/{id}`)
+   * Se documentaron todos los métodos mediante `@Operation` y `@Tag` para su visualización interactiva en Swagger UI (`/swagger-ui.html`).
    * Se implementó el mecanismo de inyección dinámica según el parámetro `{database}` (`MARIA` o `MONGO`).
 
 5. **Implementación del Adaptador CLI:**
    * Se codificaron los menús interactivos `PersonaMenu`, `ProfesionMenu`, `TelefonoMenu` y `EstudiosMenu`.
+   * Cada submenú implementa exactamente los **6 métodos (3 de lectura y 3 de escritura)**: (1) Ver todos, (2) Buscar por ID/cédula, (3) Crear nuevo, (4) Editar, (5) Eliminar, (6) Contar total.
    * Se conectaron todas las opciones en el `MenuPrincipal`, permitiendo alternar en caliente entre MariaDB y MongoDB para cada operación.
 
-6. **Automatización de Infraestructura y Pruebas:**
-   * Se crearon los scripts DDL y DML completos para MariaDB y MongoDB.
-   * Se configuró un archivo `docker-compose.yml` para el despliegue inmediato de las bases de datos.
+6. **Automatización de Infraestructura, Contenerización y Pruebas:**
+   * Se crearon los scripts DDL y DML completos para MariaDB y MongoDB en `/scripts`.
+   * Se orquestó todo el ecosistema con Docker y Docker Compose (`mariadb`, `mongodb`, `rest-api`, `cli`) eliminando la necesidad de software local.
+   * Se desarrolló la suite de pruebas automáticas `./test_endpoints.sh` con validación 100% exitosa de los 24 endpoints.
+   * Se incluyó la colección de pruebas para Postman en `postman_collection.json`.
 
 ---
 

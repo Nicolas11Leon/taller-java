@@ -1,0 +1,287 @@
+{
+	"info": {
+		"_postman_id": "b7a2d480-1a2b-4e8f-9a7c-3f9f7ec0db81",
+		"name": "PersonAPP - Arquitectura Hexagonal (Laboratorio 2)",
+		"description": "Colección completa de pruebas para los 24 endpoints (6 métodos x 4 entidades: Persona, Profesión, Teléfono, Estudios) con soporte para MariaDB y MongoDB.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api/v1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Persona",
+			"item": [
+				{
+					"name": "Lectura 1 - Listar Personas (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/persona/MARIA", "host": ["{{baseUrl}}"], "path": ["persona", "MARIA"] }
+					}
+				},
+				{
+					"name": "Lectura 1 - Listar Personas (MongoDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/persona/MONGO", "host": ["{{baseUrl}}"], "path": ["persona", "MONGO"] }
+					}
+				},
+				{
+					"name": "Lectura 2 - Buscar Persona por CC (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/persona/MARIA/123456789", "host": ["{{baseUrl}}"], "path": ["persona", "MARIA", "123456789"] }
+					}
+				},
+				{
+					"name": "Lectura 2 - Buscar Persona por CC (MongoDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/persona/MONGO/123456789", "host": ["{{baseUrl}}"], "path": ["persona", "MONGO", "123456789"] }
+					}
+				},
+				{
+					"name": "Lectura 3 - Contar Personas (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/persona/MARIA/count", "host": ["{{baseUrl}}"], "path": ["persona", "MARIA", "count"] }
+					}
+				},
+				{
+					"name": "Lectura 3 - Contar Personas (MongoDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/persona/MONGO/count", "host": ["{{baseUrl}}"], "path": ["persona", "MONGO", "count"] }
+					}
+				},
+				{
+					"name": "Escritura 1 - Crear Persona (MariaDB)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dni\": \"111222333\",\n  \"firstName\": \"Andres\",\n  \"lastName\": \"Castro\",\n  \"age\": \"28\",\n  \"sex\": \"M\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/persona", "host": ["{{baseUrl}}"], "path": ["persona"] }
+					}
+				},
+				{
+					"name": "Escritura 2 - Editar Persona (MariaDB)",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dni\": \"111222333\",\n  \"firstName\": \"Andres Felipe\",\n  \"lastName\": \"Castro\",\n  \"age\": \"29\",\n  \"sex\": \"M\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/persona/MARIA/111222333", "host": ["{{baseUrl}}"], "path": ["persona", "MARIA", "111222333"] }
+					}
+				},
+				{
+					"name": "Escritura 3 - Eliminar Persona (MariaDB)",
+					"request": {
+						"method": "DELETE",
+						"url": { "raw": "{{baseUrl}}/persona/MARIA/111222333", "host": ["{{baseUrl}}"], "path": ["persona", "MARIA", "111222333"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Profesión",
+			"item": [
+				{
+					"name": "Lectura 1 - Listar Profesiones (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/profesion/MARIA", "host": ["{{baseUrl}}"], "path": ["profesion", "MARIA"] }
+					}
+				},
+				{
+					"name": "Lectura 1 - Listar Profesiones (MongoDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/profesion/MONGO", "host": ["{{baseUrl}}"], "path": ["profesion", "MONGO"] }
+					}
+				},
+				{
+					"name": "Lectura 2 - Buscar Profesión por ID (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/profesion/MARIA/1", "host": ["{{baseUrl}}"], "path": ["profesion", "MARIA", "1"] }
+					}
+				},
+				{
+					"name": "Lectura 3 - Contar Profesiones (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/profesion/MARIA/count", "host": ["{{baseUrl}}"], "path": ["profesion", "MARIA", "count"] }
+					}
+				},
+				{
+					"name": "Escritura 1 - Crear Profesión (MariaDB)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"10\",\n  \"name\": \"Arquitecto de Software\",\n  \"description\": \"Diseno de sistemas\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/profesion", "host": ["{{baseUrl}}"], "path": ["profesion"] }
+					}
+				},
+				{
+					"name": "Escritura 2 - Editar Profesión (MariaDB)",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"10\",\n  \"name\": \"Arquitecto Cloud\",\n  \"description\": \"Diseno e infraestructura\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/profesion/MARIA/10", "host": ["{{baseUrl}}"], "path": ["profesion", "MARIA", "10"] }
+					}
+				},
+				{
+					"name": "Escritura 3 - Eliminar Profesión (MariaDB)",
+					"request": {
+						"method": "DELETE",
+						"url": { "raw": "{{baseUrl}}/profesion/MARIA/10", "host": ["{{baseUrl}}"], "path": ["profesion", "MARIA", "10"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Teléfono",
+			"item": [
+				{
+					"name": "Lectura 1 - Listar Teléfonos (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/telefono/MARIA", "host": ["{{baseUrl}}"], "path": ["telefono", "MARIA"] }
+					}
+				},
+				{
+					"name": "Lectura 1 - Listar Teléfonos (MongoDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/telefono/MONGO", "host": ["{{baseUrl}}"], "path": ["telefono", "MONGO"] }
+					}
+				},
+				{
+					"name": "Lectura 2 - Buscar Teléfono por Número (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/telefono/MARIA/3001234567", "host": ["{{baseUrl}}"], "path": ["telefono", "MARIA", "3001234567"] }
+					}
+				},
+				{
+					"name": "Lectura 3 - Contar Teléfonos (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/telefono/MARIA/count", "host": ["{{baseUrl}}"], "path": ["telefono", "MARIA", "count"] }
+					}
+				},
+				{
+					"name": "Escritura 1 - Crear Teléfono (MariaDB)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"number\": \"3110001122\",\n  \"oper\": \"Claro\",\n  \"ownerDni\": \"123456789\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/telefono", "host": ["{{baseUrl}}"], "path": ["telefono"] }
+					}
+				},
+				{
+					"name": "Escritura 2 - Editar Teléfono (MariaDB)",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"number\": \"3110001122\",\n  \"oper\": \"Movistar\",\n  \"ownerDni\": \"123456789\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/telefono/MARIA/3110001122", "host": ["{{baseUrl}}"], "path": ["telefono", "MARIA", "3110001122"] }
+					}
+				},
+				{
+					"name": "Escritura 3 - Eliminar Teléfono (MariaDB)",
+					"request": {
+						"method": "DELETE",
+						"url": { "raw": "{{baseUrl}}/telefono/MARIA/3110001122", "host": ["{{baseUrl}}"], "path": ["telefono", "MARIA", "3110001122"] }
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Estudios",
+			"item": [
+				{
+					"name": "Lectura 1 - Listar Estudios (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/estudio/MARIA", "host": ["{{baseUrl}}"], "path": ["estudio", "MARIA"] }
+					}
+				},
+				{
+					"name": "Lectura 1 - Listar Estudios (MongoDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/estudio/MONGO", "host": ["{{baseUrl}}"], "path": ["estudio", "MONGO"] }
+					}
+				},
+				{
+					"name": "Lectura 2 - Buscar Estudio por Llave Compuesta (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/estudio/MARIA/1/123456789", "host": ["{{baseUrl}}"], "path": ["estudio", "MARIA", "1", "123456789"] }
+					}
+				},
+				{
+					"name": "Lectura 3 - Contar Estudios (MariaDB)",
+					"request": {
+						"method": "GET",
+						"url": { "raw": "{{baseUrl}}/estudio/MARIA/count", "host": ["{{baseUrl}}"], "path": ["estudio", "MARIA", "count"] }
+					}
+				},
+				{
+					"name": "Escritura 1 - Crear Estudio (MariaDB)",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idProf\": \"3\",\n  \"ccPer\": \"123456789\",\n  \"fecha\": \"2021-08-15\",\n  \"univer\": \"Universidad del Norte\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/estudio", "host": ["{{baseUrl}}"], "path": ["estudio"] }
+					}
+				},
+				{
+					"name": "Escritura 2 - Editar Estudio (MariaDB)",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idProf\": \"3\",\n  \"ccPer\": \"123456789\",\n  \"fecha\": \"2021-08-15\",\n  \"univer\": \"UniNorte Colombia\",\n  \"database\": \"MARIA\"\n}"
+						},
+						"url": { "raw": "{{baseUrl}}/estudio/MARIA/3/123456789", "host": ["{{baseUrl}}"], "path": ["estudio", "MARIA", "3", "123456789"] }
+					}
+				},
+				{
+					"name": "Escritura 3 - Eliminar Estudio (MariaDB)",
+					"request": {
+						"method": "DELETE",
+						"url": { "raw": "{{baseUrl}}/estudio/MARIA/3/123456789", "host": ["{{baseUrl}}"], "path": ["estudio", "MARIA", "3", "123456789"] }
+					}
+				}
+			]
+		}
+	]
+}

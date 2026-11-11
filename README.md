@@ -132,6 +132,23 @@ Cada submódulo permite seleccionar el motor de persistencia (`1: MariaDB`, `2: 
 
 ---
 
+## 🧪 Pruebas Automáticas y Colección Postman
+
+### 1. Script de Pruebas Automáticas en Bash
+Con los contenedores arriba, ejecuta en una sola línea la verificación completa de los 24 endpoints:
+```bash
+./test_endpoints.sh
+```
+El script prueba automáticamente:
+* Las 4 entidades (Persona, Profesión, Teléfono, Estudios).
+* Los 6 métodos en cada una (Listar, Buscar, Contar, Crear, Editar, Eliminar).
+* Ambos motores de bases de datos (MariaDB y MongoDB).
+
+### 2. Colección de Postman
+Importa en Postman el archivo `postman_collection.json` incluido en la raíz del repositorio para disponer de todas las peticiones listas para ejecutar con un solo clic.
+
+---
+
 ## 🛑 Detener los Contenedores
 
 Para apagar todos los servicios:
