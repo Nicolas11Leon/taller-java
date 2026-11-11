@@ -28,10 +28,15 @@ public class PersonaMapperRest {
 
 	public Person fromAdapterToDomain(PersonaRequest request) {
 		if (request == null) return null;
-		co.edu.javeriana.as.personapp.domain.Gender gender = "F".equalsIgnoreCase(request.getSex())
-				? co.edu.javeriana.as.personapp.domain.Gender.FEMALE
-				: "M".equalsIgnoreCase(request.getSex()) ? co.edu.javeriana.as.personapp.domain.Gender.MALE
-						: co.edu.javeriana.as.personapp.domain.Gender.OTHER;
+		co.edu.javeriana.as.personapp.domain.Gender gender;
+		String sex = request.getSex() != null ? request.getSex().trim().toUpperCase() : "";
+		if ("F".equals(sex) || "FEMALE".equals(sex)) {
+			gender = co.edu.javeriana.as.personapp.domain.Gender.FEMALE;
+		} else if ("M".equals(sex) || "MALE".equals(sex)) {
+			gender = co.edu.javeriana.as.personapp.domain.Gender.MALE;
+		} else {
+			gender = co.edu.javeriana.as.personapp.domain.Gender.OTHER;
+		}
 		Integer dni = null;
 		if (request.getDni() != null && !request.getDni().trim().isEmpty()) {
 			try {

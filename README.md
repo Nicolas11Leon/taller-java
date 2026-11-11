@@ -1,6 +1,8 @@
-# PersonAPP - Arquitectura Hexagonal con Spring Boot
+# PersonAPP - Arquitectura Hexagonal con Spring Boot (100% Contenerizado con Docker)
 
-Proyecto de laboratorio que implementa una arquitectura limpia/hexagonal (Puertos y Adaptadores) para la gestión del modelo de datos `Persona`, `Profesión`, `Teléfono` y `Estudios`, soportando persistencia dual en **MariaDB** y **MongoDB**, y dos adaptadores de entrada independientes: **API REST** (con Swagger 3 / OpenAPI) y **Línea de Comandos (CLI)** interactiva.
+Proyecto de laboratorio que implementa una arquitectura limpia/hexagonal (Puertos y Adaptadores) para la gestión del modelo de datos `Persona`, `Profesión`, `Teléfono` y `Estudios`. 
+
+**Todo el sistema está completamente contenerizado**, por lo que **no se requiere instalar Java, Maven, MariaDB ni MongoDB en la máquina host**. Solo se necesita tener **Docker** y **Docker Compose**.
 
 ---
 
@@ -23,77 +25,58 @@ El proyecto está modularizado utilizando Maven multi-módulo:
 * **`application`**: Casos de uso y puertos:
   * *Puertos de entrada (`port.in`)*: Interfaces que definen las operaciones ofrecidas por el sistema (`PersonInputPort`, `ProfessionInputPort`, `PhoneInputPort`, `StudyInputPort`).
   * *Puertos de salida (`port.out`)*: Interfaces que definen la comunicación hacia el exterior (`PersonOutputPort`, `ProfessionOutputPort`, `PhoneOutputPort`, `StudyOutputPort`).
-  * *Casos de uso (`usecase`)*: Implementaciones que orquestan las reglas de negocio.
+  * *Casos de uso (`usecase`)*: Implementaciones que orquestan las reglas de negocio (`PersonUseCase`, `ProfessionUseCase`, `PhoneUseCase`, `StudyUseCase`).
 * **`maria-output-adapter`**: Adaptador de salida para persistencia en MariaDB / MySQL utilizando JPA / Hibernate.
 * **`mongo-output-adapter`**: Adaptador de salida para persistencia en MongoDB utilizando Spring Data MongoDB.
 * **`rest-input-adapter`**: Adaptador de entrada REST (`@RestController`) que expone los endpoints HTTP con Swagger 3 (OpenAPI). Corre en el puerto `3000`.
 * **`cli-input-adapter`**: Adaptador de entrada por terminal (`CommandLineRunner`) con menús interactivos por consola.
-* **`common`**: Anotaciones personalizadas (`@Adapter`, `@Port`, `@UseCase`, `@Mapper`), excepciones y enums de configuración.
+* **`common`**: Anotaciones semánticas de arquitectura (`@Adapter`, `@Port`, `@UseCase`, `@Mapper`), excepciones y enums de configuración.
 * **`scripts`**: Scripts DDL y DML para MariaDB y MongoDB.
 
 ---
 
-## 🚀 Requisitos del Ambiente
+## 🐳 Despliegue 100% Contenerizado (Docker & Docker Compose)
 
-* **Java JDK**: 11 o 17 (probado y compatible con JDK 17 y JDK 21).
-* **Maven**: 3.8+ (se incluye script `./mvnw`).
-* **MariaDB**: Puerto `3307` (Base de datos: `persona_db`, Usuario: `persona_db`, Contraseña: `persona_db`).
-* **MongoDB**: Puerto `27017` (Base de datos: `persona_db`, Usuario: `persona_db`, Contraseña: `persona_db`, Auth DB: `admin`).
-* **Docker & Docker Compose** (opcional, para levantar las bases de datos de inmediato).
+### 1. Requisitos
+* **Docker Engine** (versión 20.10+)
+* **Docker Compose** (versión 2.0+)
 
----
+> No es necesario instalar JDK, Maven, MariaDB ni MongoDB en el PC. Los Dockerfiles multi-etapa se encargan de compilar el código fuente y empaquetar los artefactos dentro de contenedores aislados.
 
-## 🐳 Despliegue de Bases de Datos con Docker Compose
+### 2. Levantar la Infraestructura y la API REST
 
-Para levantar automáticamente MariaDB (puerto 3307) y MongoDB (puerto 27017) con los scripts DDL y DML ejecutados:
+Para compilar las imágenes e iniciar **MariaDB** (puerto `3307`), **MongoDB** (puerto `27017`) y la **API REST** (puerto `3000`):
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-### Configuración manual de bases de datos:
-Si no utilizas Docker, ejecuta los scripts ubicados en la carpeta `scripts/`:
-1. **MariaDB**:
-   * Ejecutar `scripts/persona_ddl_maria.sql`
-   * Ejecutar `scripts/persona_dml_maria.sql`
-2. **MongoDB**:
-   * Ejecutar `scripts/persona_ddl_mongo.js`
-   * Ejecutar `scripts/persona_dml_mongo.js`
+El orden de inicio y disponibilidad está garantizado mediante *Healthchecks* configurados en `docker-compose.yml`:
+1. `mariadb` ejecuta automáticamente los scripts DDL y DML en `/docker-entrypoint-initdb.d/`.
+2. `mongodb` ejecuta automáticamente los scripts DDL y DML en `/docker-entrypoint-initdb.d/`.
+3. `rest-api` espera a que ambas bases de datos estén en estado saludable (*healthy*) antes de iniciar.
 
----
-
-## 🛠️ Compilación del Proyecto
-
-Para compilar todos los módulos del proyecto:
-
+Para verificar el estado de los contenedores:
 ```bash
-./mvnw clean compile
+docker compose ps
 ```
 
-O empaquetar los artefactos `.jar`:
-
+Para ver los logs en tiempo real:
 ```bash
-./mvnw clean package -DskipTests
+docker compose logs -f rest-api
 ```
 
 ---
 
-## 🌐 Ejecución del Adaptador REST (API & Swagger)
+## 🌐 Documentación Interactiva Swagger / OpenAPI 3
 
-El adaptador REST es una aplicación Spring Boot independiente que expone la API en el puerto `3000`.
+Una vez levantado el entorno con Docker, accede directamente desde el navegador:
 
-### Iniciar la API REST:
-```bash
-./mvnw spring-boot:run -pl rest-input-adapter
-```
-
-### Documentación Swagger / OpenAPI 3:
-Una vez iniciada la aplicación, accede desde el navegador web a:
 👉 **[http://localhost:3000/swagger-ui.html](http://localhost:3000/swagger-ui.html)**
 
-### Endpoints Principales:
+### Endpoints Disponibles:
 
-Todos los endpoints admiten la selección del motor de base de datos (`MARIA` o `MONGO`):
+Todos los endpoints admiten la selección del motor de persistencia (`MARIA` o `MONGO`):
 
 | Módulo | Método | Endpoint | Descripción |
 | :--- | :--- | :--- | :--- |
@@ -124,19 +107,42 @@ Todos los endpoints admiten la selección del motor de base de datos (`MARIA` o 
 
 ---
 
-## 💻 Ejecución del Adaptador CLI (Consola)
+## 💻 Ejecución del Adaptador CLI (Consola Interactiva Contenerizada)
 
-El adaptador CLI es una aplicación Spring Boot de consola interactiva.
+Para ejecutar la aplicación de consola interactiva dentro de su propio contenedor Docker conectado a la red interna:
 
-### Iniciar la Consola interactiva:
 ```bash
-./mvnw spring-boot:run -pl cli-input-adapter
+docker compose run --rm cli
 ```
 
-El menú interactivo permite elegir:
-1. Módulo (`Persona`, `Profesión`, `Teléfono`, `Estudio`)
-2. Motor de persistencia (`1: MariaDB`, `2: MongoDB`)
-3. Operación CRUD (`Ver todo`, `Buscar`, `Crear`, `Editar`, `Eliminar`, `Contar`)
+Esto abrirá la consola interactiva (`MenuPrincipal`) en tu terminal:
+```text
+==========================================
+  SISTEMA PERSONAPP - ARQUITECTURA HEXAGONAL
+==========================================
+1 para trabajar con el Módulo de Personas
+2 para trabajar con el Módulo de Profesiones
+3 para trabajar con el Módulo de Teléfonos
+4 para trabajar con el Módulo de Estudios
+0 para Salir
+==========================================
+```
+
+Cada submódulo permite seleccionar el motor de persistencia (`1: MariaDB`, `2: MongoDB`) y ejecutar operaciones de consulta, búsqueda, creación, edición, eliminación y conteo.
+
+---
+
+## 🛑 Detener los Contenedores
+
+Para apagar todos los servicios:
+```bash
+docker compose down
+```
+
+Para apagar y eliminar también los volúmenes de datos:
+```bash
+docker compose down -v
+```
 
 ---
 

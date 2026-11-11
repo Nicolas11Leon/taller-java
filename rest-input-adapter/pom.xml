@@ -44,7 +44,15 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${global.springframework.boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
+					<mainClass>co.edu.javeriana.as.personapp.PersonAppRestApi</mainClass>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

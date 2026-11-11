@@ -1,30 +1,28 @@
 // DDL para MongoDB
-// Creación de usuario administrador y colecciones con índices para persona_db
+// Creación de usuario y colecciones con índices para persona_db
 
-use admin;
+var adminDB = db.getSiblingDB("admin");
 
-db.createUser({
+adminDB.createUser({
   user: "persona_db",
   pwd: "persona_db",
   roles: [
-    { role: "read", db: "persona_db" },
     { role: "readWrite", db: "persona_db" },
     { role: "dbAdmin", db: "persona_db" }
-  ],
-  mechanisms: ["SCRAM-SHA-1", "SCRAM-SHA-256"]
+  ]
 });
 
-use persona_db;
+var personaDB = db.getSiblingDB("persona_db");
 
 // Crear colecciones
-db.createCollection("persona");
-db.createCollection("profesion");
-db.createCollection("telefono");
-db.createCollection("estudios");
+personaDB.createCollection("persona");
+personaDB.createCollection("profesion");
+personaDB.createCollection("telefono");
+personaDB.createCollection("estudios");
 
 // Índices
-db.persona.createIndex({ "cc": 1 });
-db.profesion.createIndex({ "id": 1 });
-db.telefono.createIndex({ "num": 1 });
-db.estudios.createIndex({ "primaryPersona.$id": 1 });
-db.estudios.createIndex({ "primaryProfesion.$id": 1 });
+personaDB.persona.createIndex({ "cc": 1 });
+personaDB.profesion.createIndex({ "id": 1 });
+personaDB.telefono.createIndex({ "num": 1 });
+personaDB.estudios.createIndex({ "primaryPersona.$id": 1 });
+personaDB.estudios.createIndex({ "primaryProfesion.$id": 1 });

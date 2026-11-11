@@ -1,7 +1,7 @@
 // DML para MongoDB
 // Inserción de datos iniciales en la base de datos persona_db
 
-use persona_db;
+var db = db.getSiblingDB("persona_db");
 
 // 1. Personas
 db.persona.insertMany([
@@ -85,31 +85,31 @@ db.telefono.insertMany([
 	{
 		"_id": "3001234567",
 		"oper": "Claro",
-		"primaryDuenio": DBRef("persona", NumberInt(123456789)),
+		"primaryDuenio": NumberInt(123456789),
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument"
 	},
 	{
 		"_id": "3109876543",
 		"oper": "Movistar",
-		"primaryDuenio": DBRef("persona", NumberInt(123456789)),
+		"primaryDuenio": NumberInt(123456789),
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument"
 	},
 	{
 		"_id": "3204567890",
 		"oper": "Tigo",
-		"primaryDuenio": DBRef("persona", NumberInt(321654987)),
+		"primaryDuenio": NumberInt(321654987),
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument"
 	},
 	{
 		"_id": "3156789012",
 		"oper": "WOM",
-		"primaryDuenio": DBRef("persona", NumberInt(963852741)),
+		"primaryDuenio": NumberInt(963852741),
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument"
 	},
 	{
 		"_id": "3012345678",
 		"oper": "Claro",
-		"primaryDuenio": DBRef("persona", NumberInt(987654321)),
+		"primaryDuenio": NumberInt(987654321),
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument"
 	}
 ], { ordered: false });
@@ -118,32 +118,32 @@ db.telefono.insertMany([
 db.estudios.insertMany([
 	{
 		"_id": "123456789-1",
-		"primaryPersona": DBRef("persona", NumberInt(123456789)),
-		"primaryProfesion": DBRef("profesion", NumberInt(1)),
+		"primaryPersona": NumberInt(123456789),
+		"primaryProfesion": NumberInt(1),
 		"fecha": ISODate("2018-12-15T00:00:00Z"),
 		"univer": "Pontificia Universidad Javeriana",
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.EstudiosDocument"
 	},
 	{
 		"_id": "321654987-2",
-		"primaryPersona": DBRef("persona", NumberInt(321654987)),
-		"primaryProfesion": DBRef("profesion", NumberInt(2)),
+		"primaryPersona": NumberInt(321654987),
+		"primaryProfesion": NumberInt(2),
 		"fecha": ISODate("2015-06-20T00:00:00Z"),
 		"univer": "Universidad Nacional de Colombia",
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.EstudiosDocument"
 	},
 	{
 		"_id": "963852741-4",
-		"primaryPersona": DBRef("persona", NumberInt(963852741)),
-		"primaryProfesion": DBRef("profesion", NumberInt(4)),
+		"primaryPersona": NumberInt(963852741),
+		"primaryProfesion": NumberInt(4),
 		"fecha": ISODate("2022-11-30T00:00:00Z"),
 		"univer": "Universidad de los Andes",
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.EstudiosDocument"
 	},
 	{
 		"_id": "987654321-3",
-		"primaryPersona": DBRef("persona", NumberInt(987654321)),
-		"primaryProfesion": DBRef("profesion", NumberInt(3)),
+		"primaryPersona": NumberInt(987654321),
+		"primaryProfesion": NumberInt(3),
 		"fecha": ISODate("2010-07-15T00:00:00Z"),
 		"univer": "Universidad del Rosario",
 		"_class": "co.edu.javeriana.as.personapp.mongo.document.EstudiosDocument"

@@ -1,0 +1,31 @@
+# Multi-stage Dockerfile para CLI Input Adapter
+# Etapa 1: Compilación de todos los módulos Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
+WORKDIR /build
+
+COPY pom.xml .
+COPY common/pom.xml common/
+COPY domain/pom.xml domain/
+COPY application/pom.xml application/
+COPY maria-output-adapter/pom.xml maria-output-adapter/
+COPY mongo-output-adapter/pom.xml mongo-output-adapter/
+COPY rest-input-adapter/pom.xml rest-input-adapter/
+COPY cli-input-adapter/pom.xml cli-input-adapter/
+
+COPY common common/
+COPY domain domain/
+COPY application application/
+COPY maria-output-adapter maria-output-adapter/
+COPY mongo-output-adapter mongo-output-adapter/
+COPY rest-input-adapter rest-input-adapter/
+COPY cli-input-adapter cli-input-adapter/
+
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Imagen de ejecución para consola interactiva
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+COPY --from=builder /build/cli-input-adapter/target/cli-input-adapter-0.0.1-SNAPSHOT.jar /app/app.jar
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

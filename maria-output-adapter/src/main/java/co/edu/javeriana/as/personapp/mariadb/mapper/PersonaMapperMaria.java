@@ -38,7 +38,7 @@ public class PersonaMapperMaria {
 	}
 
 	private Character validateGenero(@NonNull Gender gender) {
-		return gender == Gender.FEMALE ? 'F' : gender == Gender.MALE ? 'M' : ' ';
+		return gender == Gender.FEMALE ? 'F' : 'M';
 	}
 
 	private Integer validateEdad(Integer age) {

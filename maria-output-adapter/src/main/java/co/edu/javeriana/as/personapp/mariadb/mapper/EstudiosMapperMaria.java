@@ -32,9 +32,7 @@ public class EstudiosMapperMaria {
 	}
 
 	private Date validateFecha(LocalDate graduationDate) {
-		return graduationDate != null
-				? Date.from(graduationDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
-				: null;
+		return graduationDate != null ? java.sql.Date.valueOf(graduationDate) : null;
 	}
 
 	private String validateUniver(String universityName) {
@@ -56,7 +54,13 @@ public class EstudiosMapperMaria {
 	}
 
 	private LocalDate validateGraduationDate(Date fecha) {
-		return fecha != null ? fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null;
+		if (fecha == null) {
+			return null;
+		}
+		if (fecha instanceof java.sql.Date) {
+			return ((java.sql.Date) fecha).toLocalDate();
+		}
+		return fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 	private String validateUniversityName(String univer) {

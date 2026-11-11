@@ -73,16 +73,18 @@ public class PersonaMapperMongo {
 	public Person fromAdapterToDomainShallow(PersonaDocument personaDocument) {
 		if (personaDocument == null) return null;
 		Person person = new Person();
-		person.setIdentification(personaDocument.getId());
-		person.setFirstName(personaDocument.getNombre());
-		person.setLastName(personaDocument.getApellido());
+		person.setIdentification(personaDocument.getId() != null ? personaDocument.getId() : 0);
+		person.setFirstName(personaDocument.getNombre() != null ? personaDocument.getNombre() : "");
+		person.setLastName(personaDocument.getApellido() != null ? personaDocument.getApellido() : "");
 		person.setGender(validateGender(personaDocument.getGenero()));
 		person.setAge(validateAge(personaDocument.getEdad()));
 		return person;
 	}
 
 	private @NonNull Gender validateGender(String genero) {
-		return "F".equals(genero) ? Gender.FEMALE : "M".equals(genero) ? Gender.MALE : Gender.OTHER;
+		if (genero == null) return Gender.OTHER;
+		String g = genero.trim().toUpperCase();
+		return "F".equals(g) || "FEMALE".equals(g) ? Gender.FEMALE : "M".equals(g) || "MALE".equals(g) ? Gender.MALE : Gender.OTHER;
 	}
 
 	private Integer validateAge(Integer edad) {

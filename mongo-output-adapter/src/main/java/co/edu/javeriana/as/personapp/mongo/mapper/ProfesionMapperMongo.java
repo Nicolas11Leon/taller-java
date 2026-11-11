@@ -50,8 +50,8 @@ public class ProfesionMapperMongo {
 	public Profession fromAdapterToDomainShallow(ProfesionDocument profesionDocument) {
 		if (profesionDocument == null) return null;
 		Profession profession = new Profession();
-		profession.setIdentification(profesionDocument.getId());
-		profession.setName(profesionDocument.getNom());
+		profession.setIdentification(profesionDocument.getId() != null ? profesionDocument.getId() : 0);
+		profession.setName(profesionDocument.getNom() != null ? profesionDocument.getNom() : "");
 		profession.setDescription(validateDescription(profesionDocument.getDes()));
 		return profession;
 	}
