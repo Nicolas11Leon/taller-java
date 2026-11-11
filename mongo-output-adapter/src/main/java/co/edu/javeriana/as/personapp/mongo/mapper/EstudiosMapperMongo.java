@@ -53,12 +53,17 @@ public class EstudiosMapperMongo {
 	}
 
 	public Study fromAdapterToDomain(EstudiosDocument estudiosDocument) {
+		if (estudiosDocument == null) return null;
 		Study study = new Study();
-		study.setPerson(personaMapperMongo.fromAdapterToDomain(estudiosDocument.getPrimaryPersona()));
-		study.setProfession(profesionMapperMongo.fromAdapterToDomain(estudiosDocument.getPrimaryProfesion()));
+		if (estudiosDocument.getPrimaryPersona() != null) {
+			study.setPerson(personaMapperMongo.fromAdapterToDomainShallow(estudiosDocument.getPrimaryPersona()));
+		}
+		if (estudiosDocument.getPrimaryProfesion() != null) {
+			study.setProfession(profesionMapperMongo.fromAdapterToDomainShallow(estudiosDocument.getPrimaryProfesion()));
+		}
 		study.setGraduationDate(validateGraduationDate(estudiosDocument.getFecha()));
 		study.setUniversityName(validateUniversityName(estudiosDocument.getUniver()));
-		return null;
+		return study;
 	}
 
 	private LocalDate validateGraduationDate(LocalDate fecha) {

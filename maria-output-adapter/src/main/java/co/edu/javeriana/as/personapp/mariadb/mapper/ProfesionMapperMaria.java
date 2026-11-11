@@ -38,11 +38,21 @@ public class ProfesionMapperMaria {
 	}
 
 	public Profession fromAdapterToDomain(ProfesionEntity profesionEntity) {
+		if (profesionEntity == null) return null;
 		Profession profession = new Profession();
 		profession.setIdentification(profesionEntity.getId());
 		profession.setName(profesionEntity.getNom());
 		profession.setDescription(validateDescription(profesionEntity.getDes()));
 		profession.setStudies(validateStudies(profesionEntity.getEstudios()));
+		return profession;
+	}
+
+	public Profession fromAdapterToDomainShallow(ProfesionEntity profesionEntity) {
+		if (profesionEntity == null) return null;
+		Profession profession = new Profession();
+		profession.setIdentification(profesionEntity.getId());
+		profession.setName(profesionEntity.getNom());
+		profession.setDescription(validateDescription(profesionEntity.getDes()));
 		return profession;
 	}
 

@@ -42,12 +42,17 @@ public class EstudiosMapperMaria {
 	}
 
 	public Study fromAdapterToDomain(EstudiosEntity estudiosEntity) {
+		if (estudiosEntity == null) return null;
 		Study study = new Study();
-		study.setPerson(personaMapperMaria.fromAdapterToDomain(estudiosEntity.getPersona()));
-		study.setProfession(profesionMapperMaria.fromAdapterToDomain(estudiosEntity.getProfesion()));
+		if (estudiosEntity.getPersona() != null) {
+			study.setPerson(personaMapperMaria.fromAdapterToDomainShallow(estudiosEntity.getPersona()));
+		}
+		if (estudiosEntity.getProfesion() != null) {
+			study.setProfession(profesionMapperMaria.fromAdapterToDomainShallow(estudiosEntity.getProfesion()));
+		}
 		study.setGraduationDate(validateGraduationDate(estudiosEntity.getFecha()));
 		study.setUniversityName(validateUniversityName(estudiosEntity.getUniver()));
-		return null;
+		return study;
 	}
 
 	private LocalDate validateGraduationDate(Date fecha) {

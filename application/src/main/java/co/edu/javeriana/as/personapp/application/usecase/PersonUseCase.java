@@ -30,6 +30,11 @@ public class PersonUseCase implements PersonInputPort {
 	}
 
 	@Override
+	public void setPersistence(PersonOutputPort personPersistence) {
+		this.personPersintence = personPersistence;
+	}
+
+	@Override
 	public Person create(Person person) {
 		log.debug("Into create on Application Domain");
 		return personPersintence.save(person);

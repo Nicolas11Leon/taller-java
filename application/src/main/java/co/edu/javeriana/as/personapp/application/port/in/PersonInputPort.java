@@ -14,6 +14,8 @@ public interface PersonInputPort {
 	
 	public void setPersintence(PersonOutputPort personPersintence);
 	
+	public void setPersistence(PersonOutputPort personPersistence);
+	
 	public Person create(Person person);
 
 	public Person edit(Integer identification, Person person) throws NoExistException;

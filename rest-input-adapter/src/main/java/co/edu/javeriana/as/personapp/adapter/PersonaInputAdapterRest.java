@@ -12,8 +12,8 @@ import co.edu.javeriana.as.personapp.application.port.out.PersonOutputPort;
 import co.edu.javeriana.as.personapp.application.usecase.PersonUseCase;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
 import co.edu.javeriana.as.personapp.common.exceptions.InvalidOptionException;
+import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
-import co.edu.javeriana.as.personapp.domain.Gender;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.mapper.PersonaMapperRest;
 import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
@@ -35,47 +35,93 @@ public class PersonaInputAdapterRest {
 	@Autowired
 	private PersonaMapperRest personaMapperRest;
 
-	PersonInputPort personInputPort;
+	private PersonInputPort personInputPort;
 
 	private String setPersonOutputPortInjection(String dbOption) throws InvalidOptionException {
-		if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+		if (dbOption != null && dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
 			personInputPort = new PersonUseCase(personOutputPortMaria);
 			return DatabaseOption.MARIA.toString();
-		} else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
+		} else if (dbOption != null && dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
 			personInputPort = new PersonUseCase(personOutputPortMongo);
-			return  DatabaseOption.MONGO.toString();
+			return DatabaseOption.MONGO.toString();
 		} else {
 			throw new InvalidOptionException("Invalid database option: " + dbOption);
 		}
 	}
 
 	public List<PersonaResponse> historial(String database) {
-		log.info("Into historial PersonaEntity in Input Adapter");
+		log.info("Into historial Persona in Input Adapter");
 		try {
-			if(setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())){
+			if (setPersonOutputPortInjection(database).equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
 				return personInputPort.findAll().stream().map(personaMapperRest::fromDomainToAdapterRestMaria)
 						.collect(Collectors.toList());
-			}else {
+			} else {
 				return personInputPort.findAll().stream().map(personaMapperRest::fromDomainToAdapterRestMongo)
 						.collect(Collectors.toList());
 			}
-			
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
-			return new ArrayList<PersonaResponse>();
+			return new ArrayList<>();
+		}
+	}
+
+	public PersonaResponse obtenerPersona(String database, Integer cc) {
+		log.info("Into obtenerPersona in Input Adapter");
+		try {
+			String db = setPersonOutputPortInjection(database);
+			Person person = personInputPort.findOne(cc);
+			return personaMapperRest.fromDomainToAdapterRest(person, db);
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
 		}
 	}
 
 	public PersonaResponse crearPersona(PersonaRequest request) {
+		log.info("Into crearPersona in Input Adapter");
 		try {
-			setPersonOutputPortInjection(request.getDatabase());
+			String db = setPersonOutputPortInjection(request.getDatabase());
 			Person person = personInputPort.create(personaMapperRest.fromAdapterToDomain(request));
-			return personaMapperRest.fromDomainToAdapterRestMaria(person);
+			return personaMapperRest.fromDomainToAdapterRest(person, db);
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
-			//return new PersonaResponse("", "", "", "", "", "", "");
+			return null;
 		}
-		return null;
 	}
 
+	public PersonaResponse modificarPersona(Integer cc, PersonaRequest request) {
+		log.info("Into modificarPersona in Input Adapter");
+		try {
+			String db = setPersonOutputPortInjection(request.getDatabase());
+			Person toEdit = personaMapperRest.fromAdapterToDomain(request);
+			toEdit.setIdentification(cc);
+			Person edited = personInputPort.edit(cc, toEdit);
+			return personaMapperRest.fromDomainToAdapterRest(edited, db);
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
+		}
+	}
+
+	public Boolean eliminarPersona(String database, Integer cc) {
+		log.info("Into eliminarPersona in Input Adapter");
+		try {
+			setPersonOutputPortInjection(database);
+			return personInputPort.drop(cc);
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return false;
+		}
+	}
+
+	public Integer contar(String database) {
+		log.info("Into contar in Input Adapter");
+		try {
+			setPersonOutputPortInjection(database);
+			return personInputPort.count();
+		} catch (InvalidOptionException e) {
+			log.warn(e.getMessage());
+			return 0;
+		}
+	}
 }

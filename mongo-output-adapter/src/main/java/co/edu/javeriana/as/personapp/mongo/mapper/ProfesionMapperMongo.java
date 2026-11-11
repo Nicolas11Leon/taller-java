@@ -38,11 +38,21 @@ public class ProfesionMapperMongo {
 	}
 
 	public Profession fromAdapterToDomain(ProfesionDocument profesionDocument) {
+		if (profesionDocument == null) return null;
 		Profession profession = new Profession();
 		profession.setIdentification(profesionDocument.getId());
 		profession.setName(profesionDocument.getNom());
 		profession.setDescription(validateDescription(profesionDocument.getDes()));
 		profession.setStudies(validateStudies(profesionDocument.getEstudios()));
+		return profession;
+	}
+
+	public Profession fromAdapterToDomainShallow(ProfesionDocument profesionDocument) {
+		if (profesionDocument == null) return null;
+		Profession profession = new Profession();
+		profession.setIdentification(profesionDocument.getId());
+		profession.setName(profesionDocument.getNom());
+		profession.setDescription(validateDescription(profesionDocument.getDes()));
 		return profession;
 	}
 

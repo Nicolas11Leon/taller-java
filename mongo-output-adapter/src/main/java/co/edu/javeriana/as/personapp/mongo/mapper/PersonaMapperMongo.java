@@ -58,6 +58,7 @@ public class PersonaMapperMongo {
 	}
 
 	public Person fromAdapterToDomain(PersonaDocument personaDocument) {
+		if (personaDocument == null) return null;
 		Person person = new Person();
 		person.setIdentification(personaDocument.getId());
 		person.setFirstName(personaDocument.getNombre());
@@ -66,6 +67,17 @@ public class PersonaMapperMongo {
 		person.setAge(validateAge(personaDocument.getEdad()));
 		person.setStudies(validateStudies(personaDocument.getEstudios()));
 		person.setPhoneNumbers(validatePhones(personaDocument.getTelefonos()));
+		return person;
+	}
+
+	public Person fromAdapterToDomainShallow(PersonaDocument personaDocument) {
+		if (personaDocument == null) return null;
+		Person person = new Person();
+		person.setIdentification(personaDocument.getId());
+		person.setFirstName(personaDocument.getNombre());
+		person.setLastName(personaDocument.getApellido());
+		person.setGender(validateGender(personaDocument.getGenero()));
+		person.setAge(validateAge(personaDocument.getEdad()));
 		return person;
 	}
 

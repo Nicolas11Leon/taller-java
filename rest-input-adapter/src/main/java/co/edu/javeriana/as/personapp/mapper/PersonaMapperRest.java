@@ -27,8 +27,24 @@ public class PersonaMapperRest {
 	}
 
 	public Person fromAdapterToDomain(PersonaRequest request) {
-		// TODO Auto-generated method stub
-		return new Person();
+		if (request == null) return null;
+		co.edu.javeriana.as.personapp.domain.Gender gender = "F".equalsIgnoreCase(request.getSex())
+				? co.edu.javeriana.as.personapp.domain.Gender.FEMALE
+				: "M".equalsIgnoreCase(request.getSex()) ? co.edu.javeriana.as.personapp.domain.Gender.MALE
+						: co.edu.javeriana.as.personapp.domain.Gender.OTHER;
+		Integer dni = null;
+		if (request.getDni() != null && !request.getDni().trim().isEmpty()) {
+			try {
+				dni = Integer.parseInt(request.getDni().trim());
+			} catch (NumberFormatException ignored) {}
+		}
+		Integer age = null;
+		if (request.getAge() != null && !request.getAge().trim().isEmpty()) {
+			try {
+				age = Integer.parseInt(request.getAge().trim());
+			} catch (NumberFormatException ignored) {}
+		}
+		return new Person(dni, request.getFirstName(), request.getLastName(), gender, age, new java.util.ArrayList<>(), new java.util.ArrayList<>());
 	}
 		
 }

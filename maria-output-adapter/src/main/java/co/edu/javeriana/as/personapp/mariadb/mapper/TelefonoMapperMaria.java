@@ -36,6 +36,6 @@ public class TelefonoMapperMaria {
 	}
 
 	private @NonNull Person validateOwner(PersonaEntity duenio) {
-		return duenio != null ? personaMapperMaria.fromAdapterToDomain(duenio) : new Person();
+		return duenio != null ? personaMapperMaria.fromAdapterToDomainShallow(duenio) : new Person();
 	}
 }
