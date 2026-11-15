@@ -19,8 +19,10 @@ import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.domain.Phone;
+import co.edu.javeriana.as.personapp.mapper.PersonaMapperRest;
 import co.edu.javeriana.as.personapp.mapper.TelefonoMapperRest;
 import co.edu.javeriana.as.personapp.model.request.TelefonoRequest;
+import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
 import co.edu.javeriana.as.personapp.model.response.TelefonoResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +48,9 @@ public class TelefonoInputAdapterRest {
 
 	@Autowired
 	private TelefonoMapperRest telefonoMapperRest;
+
+	@Autowired
+	private PersonaMapperRest personaMapperRest;
 
 	private PhoneInputPort phoneInputPort;
 	private PersonInputPort personInputPort;
@@ -154,6 +159,21 @@ public class TelefonoInputAdapterRest {
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 			return 0;
+		}
+	}
+
+	public PersonaResponse obtenerDuenio(String database, String number) {
+		log.info("Into obtenerDuenio for telefono in Input Adapter");
+		try {
+			String db = setPhoneOutputPortInjection(database);
+			Person owner = phoneInputPort.getOwner(number);
+			if (owner == null) {
+				return null;
+			}
+			return personaMapperRest.fromDomainToAdapterRest(owner, db);
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
 		}
 	}
 }

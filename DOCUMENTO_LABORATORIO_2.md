@@ -109,6 +109,15 @@ El software se estructuró en 7 módulos independientes:
      * *Escritura 3:* Eliminar registro (`DELETE /{recurso}/{database}/{id}`)
    * Se documentaron todos los métodos mediante `@Operation` y `@Tag` para su visualización interactiva en Swagger UI (`/swagger-ui.html`).
    * Se implementó el mecanismo de inyección dinámica según el parámetro `{database}` (`MARIA` o `MONGO`).
+   * **Endpoints de Navegación de Relaciones (Sub-recursos):**
+     * `GET /api/v1/persona/{database}/{cc}/telefonos`: Retorna la lista de teléfonos asociados a una persona.
+     * `GET /api/v1/persona/{database}/{cc}/estudios`: Retorna el historial de estudios cursados por una persona.
+     * `GET /api/v1/telefono/{database}/{number}/duenio`: Retorna la entidad Persona propietaria de una línea telefónica.
+     * `GET /api/v1/profesion/{database}/{id}/estudios`: Retorna las graduaciones o estudios vinculados a una profesión.
+   * **Validación de DTOs con Bean Validation (`@Valid`):**
+     * Se integró `spring-boot-starter-validation` aplicando anotaciones (`@NotNull`, `@NotBlank`, `@Pattern`, `@Size`) sobre los modelos `*Request`.
+   * **Manejo Global de Excepciones (`@RestControllerAdvice`):**
+     * Se implementó `GlobalExceptionHandler` capturando excepciones de validación (`MethodArgumentNotValidException`), recursos no encontrados (`NoExistException`), opciones erróneas de motor (`InvalidOptionException`) e integridad relacional (`DataIntegrityViolationException`), estandarizando las respuestas en formato `ErrorResponse`.
 
 5. **Implementación del Adaptador CLI:**
    * Se codificaron los menús interactivos `PersonaMenu`, `ProfesionMenu`, `TelefonoMenu` y `EstudiosMenu`.
@@ -118,8 +127,25 @@ El software se estructuró en 7 módulos independientes:
 6. **Automatización de Infraestructura, Contenerización y Pruebas:**
    * Se crearon los scripts DDL y DML completos para MariaDB y MongoDB en `/scripts`.
    * Se orquestó todo el ecosistema con Docker y Docker Compose (`mariadb`, `mongodb`, `rest-api`, `cli`) eliminando la necesidad de software local.
-   * Se desarrolló la suite de pruebas automáticas `./test_endpoints.sh` con validación 100% exitosa de los 24 endpoints.
-   * Se incluyó la colección de pruebas para Postman en `postman_collection.json`.
+   * **Pruebas Unitarias Automatizadas (JUnit 5 + Mockito):**
+     * Se diseñó una suite de **54 pruebas unitarias** que valida el 100% de los casos de uso (`PersonUseCaseTest`, `ProfessionUseCaseTest`, `PhoneUseCaseTest`, `StudyUseCaseTest`), entidades de dominio (`PersonTest`), mappers REST (`PersonaMapperRestTest`) y el manejador global de excepciones (`GlobalExceptionHandlerTest`), simulando los puertos de salida mediante Mockito.
+     * Se creó el script de ejecución desatendida `./run_unit_tests.sh`.
+   * **Pruebas de Integración y Endpoints:**
+     * Se desarrolló la suite de pruebas automáticas `./test_endpoints.sh` con validación 100% exitosa de los 24 endpoints base + 8 endpoints de navegación de relaciones + pruebas de Bean Validation y manejo de excepciones.
+     * Se incluyó la colección de pruebas para Postman en `postman_collection.json`.
+
+7. **Modernización de Dependencias y Ciclo de Vida de Software:**
+   * Se realizó una auditoría de obsolescencia de componentes, identificando la necesidad de alinear la versión del compilador con el runtime Temurin 17 y actualizar versiones con fin de soporte (EOL).
+   * Se adoptó la estrategia in-place de actualización a las últimas versiones estables (detallada en [ACTUALIZACION_VERSIONES.md](file:///home/savaged22/arqui_talleres/taller-java/ACTUALIZACION_VERSIONES.md)):
+     * **Java Target / Source:** Actualizado a **17** en `pom.xml`, alineado con las imágenes base de Docker.
+     * **Spring Boot:** Actualizado de 2.7.11 a **2.7.18** (último release acumulado de la rama 2.x).
+     * **Spring Framework:** Actualizado de 5.3.27 a **5.3.39** (último parche con soporte extendido).
+     * **Project Lombok:** Actualizado de 1.18.26 a **1.18.34** para compatibilidad óptima con compiladores modernos.
+     * **Log4j:** Actualizado a **2.24.1**.
+     * **MariaDB Connector:** Actualizado a **3.3.3**.
+     * **SpringDoc OpenAPI UI:** Actualizado a **1.8.0**.
+     * **MongoDB en Docker:** Actualizado de 5.0 (EOL) a **7.0** (LTS activo) con migración de healthcheck a `mongosh`.
+   * Se verificó que el 100% de las 54 pruebas unitarias y 34 pruebas de endpoints se mantienen operativas sin introducir deuda técnica ni cambios de ruptura.
 
 ---
 

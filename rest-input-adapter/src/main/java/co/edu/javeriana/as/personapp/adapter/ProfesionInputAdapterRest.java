@@ -15,8 +15,11 @@ import co.edu.javeriana.as.personapp.common.exceptions.InvalidOptionException;
 import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
 import co.edu.javeriana.as.personapp.domain.Profession;
+import co.edu.javeriana.as.personapp.domain.Study;
+import co.edu.javeriana.as.personapp.mapper.EstudiosMapperRest;
 import co.edu.javeriana.as.personapp.mapper.ProfesionMapperRest;
 import co.edu.javeriana.as.personapp.model.request.ProfesionRequest;
+import co.edu.javeriana.as.personapp.model.response.EstudioResponse;
 import co.edu.javeriana.as.personapp.model.response.ProfesionResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +37,9 @@ public class ProfesionInputAdapterRest {
 
 	@Autowired
 	private ProfesionMapperRest profesionMapperRest;
+
+	@Autowired
+	private EstudiosMapperRest estudiosMapperRest;
 
 	private ProfessionInputPort professionInputPort;
 
@@ -122,6 +128,22 @@ public class ProfesionInputAdapterRest {
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 			return 0;
+		}
+	}
+
+	public List<EstudioResponse> obtenerEstudios(String database, Integer id) {
+		log.info("Into obtenerEstudios for profesion in Input Adapter");
+		try {
+			String db = setProfessionOutputPortInjection(database);
+			List<Study> studies = professionInputPort.getStudies(id);
+			if (studies == null) {
+				return new ArrayList<>();
+			}
+			return studies.stream().map(study -> estudiosMapperRest.fromDomainToAdapterRest(study, db))
+					.collect(Collectors.toList());
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
 		}
 	}
 }

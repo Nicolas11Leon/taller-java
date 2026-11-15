@@ -45,7 +45,7 @@ El proyecto está modularizado utilizando Maven multi-módulo:
 
 ### 2. Levantar la Infraestructura y la API REST
 
-Para compilar las imágenes e iniciar **MariaDB** (puerto `3307`), **MongoDB** (puerto `27017`) y la **API REST** (puerto `3000`):
+Para compilar las imágenes e iniciar **MariaDB** (puerto `3307`), **MongoDB** (puerto `27018`) y la **API REST** (puerto `3000`):
 
 ```bash
 docker compose up -d --build
@@ -72,7 +72,7 @@ docker compose logs -f rest-api
 
 Una vez levantado el entorno con Docker, accede directamente desde el navegador:
 
-**[http://localhost:3000/swagger-ui.html](http://localhost:3000/swagger-ui.html)**
+**[http://localhost:3005/swagger-ui.html](http://localhost:3005/swagger-ui.html)**
 
 ### Endpoints Disponibles:
 
@@ -86,18 +86,22 @@ Todos los endpoints admiten la selección del motor de persistencia (`MARIA` o `
 | | `PUT` | `/api/v1/persona/{database}/{cc}` | Actualizar persona |
 | | `DELETE` | `/api/v1/persona/{database}/{cc}` | Eliminar persona |
 | | `GET` | `/api/v1/persona/{database}/count` | Conteo total de personas |
+| | `GET` | `/api/v1/persona/{database}/{cc}/telefonos` | Listar teléfonos de la persona (Relación) |
+| | `GET` | `/api/v1/persona/{database}/{cc}/estudios` | Listar estudios de la persona (Relación) |
 | **Profesión** | `GET` | `/api/v1/profesion/{database}` | Listar todas las profesiones |
 | | `GET` | `/api/v1/profesion/{database}/{id}` | Obtener profesión por ID |
 | | `POST` | `/api/v1/profesion` | Crear nueva profesión |
 | | `PUT` | `/api/v1/profesion/{database}/{id}` | Actualizar profesión |
 | | `DELETE` | `/api/v1/profesion/{database}/{id}` | Eliminar profesión |
 | | `GET` | `/api/v1/profesion/{database}/count`| Conteo total de profesiones |
+| | `GET` | `/api/v1/profesion/{database}/{id}/estudios` | Listar egresados/estudios de la profesión (Relación) |
 | **Teléfono** | `GET` | `/api/v1/telefono/{database}` | Listar todos los teléfonos |
 | | `GET` | `/api/v1/telefono/{database}/{num}`| Obtener teléfono por número |
 | | `POST` | `/api/v1/telefono` | Crear nuevo teléfono |
 | | `PUT` | `/api/v1/telefono/{database}/{num}`| Actualizar teléfono |
 | | `DELETE` | `/api/v1/telefono/{database}/{num}`| Eliminar teléfono |
 | | `GET` | `/api/v1/telefono/{database}/count` | Conteo total de teléfonos |
+| | `GET` | `/api/v1/telefono/{database}/{num}/duenio` | Obtener persona dueña del teléfono (Relación) |
 | **Estudios** | `GET` | `/api/v1/estudio/{database}` | Listar todos los estudios |
 | | `GET` | `/api/v1/estudio/{database}/{idProf}/{ccPer}` | Obtener estudio específico |
 | | `POST` | `/api/v1/estudio` | Crear nuevo estudio |
@@ -132,19 +136,33 @@ Cada submódulo permite seleccionar el motor de persistencia (`1: MariaDB`, `2: 
 
 ---
 
-## Pruebas Automáticas y Colección Postman
+## Pruebas Automáticas (Testing)
 
-### 1. Script de Pruebas Automáticas en Bash
-Con los contenedores arriba, ejecuta en una sola línea la verificación completa de los 24 endpoints:
+### 1. Pruebas Unitarias con JUnit 5 y Mockito
+El proyecto cuenta con **54 pruebas unitarias** que cubren el 100% de la lógica de negocio y casos de uso (`PersonUseCase`, `ProfessionUseCase`, `PhoneUseCase`, `StudyUseCase`), entidades de dominio, mappers y manejo global de excepciones.
+
+Para ejecutarlas (sin necesidad de tener Maven ni JDK instalados en la máquina):
+```bash
+./run_unit_tests.sh
+```
+O directamente con Maven local:
+```bash
+mvn test
+```
+
+### 2. Script de Pruebas Automáticas de Endpoints en Bash
+Con los contenedores arriba, ejecuta en una sola línea la verificación completa de los 34 endpoints (CRUD + Relaciones + Validaciones):
 ```bash
 ./test_endpoints.sh
 ```
 El script prueba automáticamente:
 * Las 4 entidades (Persona, Profesión, Teléfono, Estudios).
 * Los 6 métodos en cada una (Listar, Buscar, Contar, Crear, Editar, Eliminar).
+* Los 8 endpoints de navegación de relaciones entre entidades.
+* Validación de DTOs (Bean Validation `@Valid`) y captura de errores con el `@RestControllerAdvice`.
 * Ambos motores de bases de datos (MariaDB y MongoDB).
 
-### 2. Colección de Postman
+### 3. Colección de Postman
 Importa en Postman el archivo `postman_collection.json` incluido en la raíz del repositorio para disponer de todas las peticiones listas para ejecutar con un solo clic.
 
 ---
@@ -160,6 +178,24 @@ Para apagar y eliminar también los volúmenes de datos:
 ```bash
 docker compose down -v
 ```
+
+---
+
+## Modernización de Dependencias y Versiones
+
+El proyecto fue actualizado a las últimas versiones estables para garantizar soporte y seguridad sin romper la arquitectura ni los paquetes de persistencia:
+
+* **Java Language Level:** `17` (LTS)
+* **Spring Boot:** `2.7.18` (última versión acumulativa estable de la rama 2.x)
+* **Spring Framework:** `5.3.39`
+* **Lombok:** `1.18.34`
+* **Log4j:** `2.24.1`
+* **MariaDB Client:** `3.3.3`
+* **SpringDoc OpenAPI:** `1.8.0`
+* **Motor MongoDB (Docker):** `7.0` (LTS activo)
+* **Motor MariaDB (Docker):** `10.6` (LTS activo)
+
+> Para consultar la auditoría detallada de versiones y el análisis de impacto técnico, consulte el documento: [ACTUALIZACION_VERSIONES.md](ACTUALIZACION_VERSIONES.md).
 
 ---
 

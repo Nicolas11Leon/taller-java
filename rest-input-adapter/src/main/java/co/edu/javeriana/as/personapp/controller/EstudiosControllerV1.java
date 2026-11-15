@@ -3,6 +3,8 @@ package co.edu.javeriana.as.personapp.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,7 +61,7 @@ public class EstudiosControllerV1 {
 	@Operation(summary = "Crear un nuevo estudio")
 	@ResponseBody
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> crearEstudio(@RequestBody EstudioRequest request) {
+	public ResponseEntity<?> crearEstudio(@Valid @RequestBody EstudioRequest request) {
 		log.info("POST crearEstudio");
 		EstudioResponse response = estudiosInputAdapterRest.crear(request);
 		if (response != null) {
@@ -73,7 +75,7 @@ public class EstudiosControllerV1 {
 	@ResponseBody
 	@PutMapping(path = "/{database}/{idProf}/{ccPer}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> modificarEstudio(@PathVariable String database, @PathVariable Integer idProf,
-			@PathVariable Integer ccPer, @RequestBody EstudioRequest request) {
+			@PathVariable Integer ccPer, @Valid @RequestBody EstudioRequest request) {
 		log.info("PUT modificarEstudio ({}, {}) in database {}", idProf, ccPer, database);
 		request.setDatabase(database.toUpperCase());
 		EstudioResponse response = estudiosInputAdapterRest.modificar(idProf, ccPer, request);

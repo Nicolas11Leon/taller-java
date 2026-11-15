@@ -16,12 +16,15 @@ public class PersonaMapperRest {
 	}
 	
 	public PersonaResponse fromDomainToAdapterRest(Person person, String database) {
+		if (person == null) {
+			return null;
+		}
 		return new PersonaResponse(
-				person.getIdentification()+"", 
+				person.getIdentification() != null ? person.getIdentification() + "" : "", 
 				person.getFirstName(), 
 				person.getLastName(), 
-				person.getAge()+"", 
-				person.getGender().toString(), 
+				person.getAge() != null ? person.getAge() + "" : null, 
+				person.getGender() != null ? person.getGender().toString() : "", 
 				database,
 				"OK");
 	}

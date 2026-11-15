@@ -4,7 +4,7 @@
 # Proyecto: PersonAPP - Arquitectura Hexagonal
 # ==============================================================================
 
-BASE_URL="http://localhost:3000/api/v1"
+BASE_URL="http://localhost:3005/api/v1"
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
@@ -173,6 +173,42 @@ res=$(curl -s -X DELETE "$BASE_URL/estudio/MARIA/5/123456789")
 assert_status "Estudios MARIA - Eliminar" "$res" "DELETED"
 res=$(curl -s -X DELETE "$BASE_URL/estudio/MONGO/5/123456789")
 assert_status "Estudios MONGO - Eliminar" "$res" "DELETED"
+
+echo ""
+echo "--- 5. NAVEGACIÓN DE RELACIONES (SUB-RECURSOS) ---"
+# Relación 1: Teléfonos de una persona
+res=$(curl -s "$BASE_URL/persona/MARIA/123456789/telefonos")
+assert_status "Relación: Persona -> Teléfonos (MARIA)" "$res" "3001234567"
+res=$(curl -s "$BASE_URL/persona/MONGO/123456789/telefonos")
+assert_status "Relación: Persona -> Teléfonos (MONGO)" "$res" "3001234567"
+
+# Relación 2: Estudios de una persona
+res=$(curl -s "$BASE_URL/persona/MARIA/123456789/estudios")
+assert_status "Relación: Persona -> Estudios (MARIA)" "$res" "Pontificia Universidad Javeriana"
+res=$(curl -s "$BASE_URL/persona/MONGO/123456789/estudios")
+assert_status "Relación: Persona -> Estudios (MONGO)" "$res" "Pontificia Universidad Javeriana"
+
+# Relación 3: Dueño de un teléfono
+res=$(curl -s "$BASE_URL/telefono/MARIA/3001234567/duenio")
+assert_status "Relación: Teléfono -> Dueño (MARIA)" "$res" "Pepe"
+res=$(curl -s "$BASE_URL/telefono/MONGO/3001234567/duenio")
+assert_status "Relación: Teléfono -> Dueño (MONGO)" "$res" "Pepe"
+
+# Relación 4: Estudios de una profesión
+res=$(curl -s "$BASE_URL/profesion/MARIA/1/estudios")
+assert_status "Relación: Profesión -> Estudios (MARIA)" "$res" "Pontificia Universidad Javeriana"
+res=$(curl -s "$BASE_URL/profesion/MONGO/1/estudios")
+assert_status "Relación: Profesión -> Estudios (MONGO)" "$res" "Pontificia Universidad Javeriana"
+
+echo ""
+echo "--- 6. VALIDACIÓN DE DTOs Y EXCEPCIONES GLOBALES ---"
+# Validación: Datos inválidos en POST persona
+res=$(curl -s -X POST -H "Content-Type: application/json" -d '{"dni":"abc","firstName":"","lastName":"Test","age":"invalidAge","sex":"X","database":"MARIA"}' "$BASE_URL/persona")
+assert_status "Bean Validation: Error 400 en payload inválido" "$res" "VALIDATION_ERROR"
+
+# Excepción: Persona inexistente en GET
+res=$(curl -s "$BASE_URL/persona/MARIA/999999999")
+assert_status "Exception Handler: 404 en recurso no encontrado" "$res" "NOT_FOUND"
 
 echo ""
 echo "=================================================================="

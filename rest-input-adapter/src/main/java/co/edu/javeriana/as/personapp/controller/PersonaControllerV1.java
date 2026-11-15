@@ -3,6 +3,8 @@ package co.edu.javeriana.as.personapp.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.as.personapp.adapter.PersonaInputAdapterRest;
 import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
+import co.edu.javeriana.as.personapp.model.response.EstudioResponse;
 import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
 import co.edu.javeriana.as.personapp.model.response.Response;
+import co.edu.javeriana.as.personapp.model.response.TelefonoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/persona")
-@Tag(name = "Persona", description = "Endpoints para la gestión de Personas (MariaDB y MongoDB)")
+@Tag(name = "Persona", description = "Endpoints para la gestión de Personas y sus relaciones (MariaDB y MongoDB)")
 public class PersonaControllerV1 {
 
 	@Autowired
@@ -58,7 +62,7 @@ public class PersonaControllerV1 {
 	@Operation(summary = "Crear una nueva persona")
 	@ResponseBody
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> crearPersona(@RequestBody PersonaRequest request) {
+	public ResponseEntity<?> crearPersona(@Valid @RequestBody PersonaRequest request) {
 		log.info("POST crearPersona");
 		PersonaResponse response = personaInputAdapterRest.crearPersona(request);
 		if (response != null) {
@@ -72,7 +76,7 @@ public class PersonaControllerV1 {
 	@ResponseBody
 	@PutMapping(path = "/{database}/{cc}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> modificarPersona(@PathVariable String database, @PathVariable Integer cc,
-			@RequestBody PersonaRequest request) {
+			@Valid @RequestBody PersonaRequest request) {
 		log.info("PUT modificarPersona {} in database {}", cc, database);
 		request.setDatabase(database.toUpperCase());
 		PersonaResponse response = personaInputAdapterRest.modificarPersona(cc, request);
@@ -102,5 +106,31 @@ public class PersonaControllerV1 {
 	public ResponseEntity<?> contarPersonas(@PathVariable String database) {
 		log.info("GET count personas for database: {}", database);
 		return ResponseEntity.ok(personaInputAdapterRest.contar(database.toUpperCase()));
+	}
+
+	@Operation(summary = "Obtener los teléfonos de una persona (Navegación de relación)")
+	@ResponseBody
+	@GetMapping(path = "/{database}/{cc}/telefonos", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> obtenerTelefonosPersona(@PathVariable String database, @PathVariable Integer cc) {
+		log.info("GET telefonos for persona {} in database {}", cc, database);
+		List<TelefonoResponse> telefonos = personaInputAdapterRest.obtenerTelefonos(database.toUpperCase(), cc);
+		if (telefonos != null) {
+			return ResponseEntity.ok(telefonos);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new Response("NOT_FOUND", "Persona no encontrada con cc " + cc, LocalDateTime.now()));
+	}
+
+	@Operation(summary = "Obtener los estudios de una persona (Navegación de relación)")
+	@ResponseBody
+	@GetMapping(path = "/{database}/{cc}/estudios", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> obtenerEstudiosPersona(@PathVariable String database, @PathVariable Integer cc) {
+		log.info("GET estudios for persona {} in database {}", cc, database);
+		List<EstudioResponse> estudios = personaInputAdapterRest.obtenerEstudios(database.toUpperCase(), cc);
+		if (estudios != null) {
+			return ResponseEntity.ok(estudios);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new Response("NOT_FOUND", "Persona no encontrada con cc " + cc, LocalDateTime.now()));
 	}
 }

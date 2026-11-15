@@ -3,6 +3,8 @@ package co.edu.javeriana.as.personapp.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.as.personapp.adapter.TelefonoInputAdapterRest;
 import co.edu.javeriana.as.personapp.model.request.TelefonoRequest;
+import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
 import co.edu.javeriana.as.personapp.model.response.Response;
 import co.edu.javeriana.as.personapp.model.response.TelefonoResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/telefono")
-@Tag(name = "Telefono", description = "Endpoints para la gestión de Teléfonos (MariaDB y MongoDB)")
+@Tag(name = "Telefono", description = "Endpoints para la gestión de Teléfonos y sus relaciones (MariaDB y MongoDB)")
 public class TelefonoControllerV1 {
 
 	@Autowired
@@ -58,7 +61,7 @@ public class TelefonoControllerV1 {
 	@Operation(summary = "Crear un nuevo teléfono")
 	@ResponseBody
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> crearTelefono(@RequestBody TelefonoRequest request) {
+	public ResponseEntity<?> crearTelefono(@Valid @RequestBody TelefonoRequest request) {
 		log.info("POST crearTelefono");
 		TelefonoResponse response = telefonoInputAdapterRest.crear(request);
 		if (response != null) {
@@ -72,7 +75,7 @@ public class TelefonoControllerV1 {
 	@ResponseBody
 	@PutMapping(path = "/{database}/{number}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> modificarTelefono(@PathVariable String database, @PathVariable String number,
-			@RequestBody TelefonoRequest request) {
+			@Valid @RequestBody TelefonoRequest request) {
 		log.info("PUT modificarTelefono {} in database {}", number, database);
 		request.setDatabase(database.toUpperCase());
 		TelefonoResponse response = telefonoInputAdapterRest.modificar(number, request);
@@ -102,5 +105,18 @@ public class TelefonoControllerV1 {
 	public ResponseEntity<?> contarTelefonos(@PathVariable String database) {
 		log.info("GET count telefonos for database: {}", database);
 		return ResponseEntity.ok(telefonoInputAdapterRest.contar(database.toUpperCase()));
+	}
+
+	@Operation(summary = "Obtener el dueño de un teléfono (Navegación de relación)")
+	@ResponseBody
+	@GetMapping(path = "/{database}/{number}/duenio", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> obtenerDuenioTelefono(@PathVariable String database, @PathVariable String number) {
+		log.info("GET duenio for telefono {} in database {}", number, database);
+		PersonaResponse duenio = telefonoInputAdapterRest.obtenerDuenio(database.toUpperCase(), number);
+		if (duenio != null) {
+			return ResponseEntity.ok(duenio);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new Response("NOT_FOUND", "Dueño no encontrado para el teléfono " + number, LocalDateTime.now()));
 	}
 }

@@ -3,6 +3,8 @@ package co.edu.javeriana.as.personapp.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.javeriana.as.personapp.adapter.ProfesionInputAdapterRest;
 import co.edu.javeriana.as.personapp.model.request.ProfesionRequest;
+import co.edu.javeriana.as.personapp.model.response.EstudioResponse;
 import co.edu.javeriana.as.personapp.model.response.ProfesionResponse;
 import co.edu.javeriana.as.personapp.model.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/profesion")
-@Tag(name = "Profesion", description = "Endpoints para la gestión de Profesiones (MariaDB y MongoDB)")
+@Tag(name = "Profesion", description = "Endpoints para la gestión de Profesiones y sus relaciones (MariaDB y MongoDB)")
 public class ProfesionControllerV1 {
 
 	@Autowired
@@ -58,7 +61,7 @@ public class ProfesionControllerV1 {
 	@Operation(summary = "Crear una nueva profesión")
 	@ResponseBody
 	@PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> crearProfesion(@RequestBody ProfesionRequest request) {
+	public ResponseEntity<?> crearProfesion(@Valid @RequestBody ProfesionRequest request) {
 		log.info("POST crearProfesion");
 		ProfesionResponse response = profesionInputAdapterRest.crear(request);
 		if (response != null) {
@@ -72,7 +75,7 @@ public class ProfesionControllerV1 {
 	@ResponseBody
 	@PutMapping(path = "/{database}/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> modificarProfesion(@PathVariable String database, @PathVariable Integer id,
-			@RequestBody ProfesionRequest request) {
+			@Valid @RequestBody ProfesionRequest request) {
 		log.info("PUT modificarProfesion {} in database {}", id, database);
 		request.setDatabase(database.toUpperCase());
 		ProfesionResponse response = profesionInputAdapterRest.modificar(id, request);
@@ -102,5 +105,18 @@ public class ProfesionControllerV1 {
 	public ResponseEntity<?> contarProfesiones(@PathVariable String database) {
 		log.info("GET count profesiones for database: {}", database);
 		return ResponseEntity.ok(profesionInputAdapterRest.contar(database.toUpperCase()));
+	}
+
+	@Operation(summary = "Obtener los estudios asociados a una profesión (Navegación de relación)")
+	@ResponseBody
+	@GetMapping(path = "/{database}/{id}/estudios", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> obtenerEstudiosProfesion(@PathVariable String database, @PathVariable Integer id) {
+		log.info("GET estudios for profesion {} in database {}", id, database);
+		List<EstudioResponse> estudios = profesionInputAdapterRest.obtenerEstudios(database.toUpperCase(), id);
+		if (estudios != null) {
+			return ResponseEntity.ok(estudios);
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new Response("NOT_FOUND", "Profesión no encontrada con id " + id, LocalDateTime.now()));
 	}
 }

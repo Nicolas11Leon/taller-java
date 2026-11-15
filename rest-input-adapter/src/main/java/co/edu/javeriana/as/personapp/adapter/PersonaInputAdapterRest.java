@@ -15,9 +15,15 @@ import co.edu.javeriana.as.personapp.common.exceptions.InvalidOptionException;
 import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
 import co.edu.javeriana.as.personapp.domain.Person;
+import co.edu.javeriana.as.personapp.domain.Phone;
+import co.edu.javeriana.as.personapp.domain.Study;
+import co.edu.javeriana.as.personapp.mapper.EstudiosMapperRest;
 import co.edu.javeriana.as.personapp.mapper.PersonaMapperRest;
+import co.edu.javeriana.as.personapp.mapper.TelefonoMapperRest;
 import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
+import co.edu.javeriana.as.personapp.model.response.EstudioResponse;
 import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
+import co.edu.javeriana.as.personapp.model.response.TelefonoResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,6 +40,12 @@ public class PersonaInputAdapterRest {
 
 	@Autowired
 	private PersonaMapperRest personaMapperRest;
+
+	@Autowired
+	private TelefonoMapperRest telefonoMapperRest;
+
+	@Autowired
+	private EstudiosMapperRest estudiosMapperRest;
 
 	private PersonInputPort personInputPort;
 
@@ -122,6 +134,38 @@ public class PersonaInputAdapterRest {
 		} catch (InvalidOptionException e) {
 			log.warn(e.getMessage());
 			return 0;
+		}
+	}
+
+	public List<TelefonoResponse> obtenerTelefonos(String database, Integer cc) {
+		log.info("Into obtenerTelefonos for persona in Input Adapter");
+		try {
+			String db = setPersonOutputPortInjection(database);
+			List<Phone> phones = personInputPort.getPhones(cc);
+			if (phones == null) {
+				return new ArrayList<>();
+			}
+			return phones.stream().map(phone -> telefonoMapperRest.fromDomainToAdapterRest(phone, db))
+					.collect(Collectors.toList());
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
+		}
+	}
+
+	public List<EstudioResponse> obtenerEstudios(String database, Integer cc) {
+		log.info("Into obtenerEstudios for persona in Input Adapter");
+		try {
+			String db = setPersonOutputPortInjection(database);
+			List<Study> studies = personInputPort.getStudies(cc);
+			if (studies == null) {
+				return new ArrayList<>();
+			}
+			return studies.stream().map(study -> estudiosMapperRest.fromDomainToAdapterRest(study, db))
+					.collect(Collectors.toList());
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return null;
 		}
 	}
 }
