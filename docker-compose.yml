@@ -49,8 +49,10 @@ services:
       dockerfile: Dockerfile.rest
     container_name: rest_personapp
     ports:
+      - "3000:3005"
       - "3005:3005"
     environment:
+      SERVER_PORT: 3005
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/persona_db
       SPRING_DATASOURCE_USERNAME: persona_db
       SPRING_DATASOURCE_PASSWORD: persona_db
