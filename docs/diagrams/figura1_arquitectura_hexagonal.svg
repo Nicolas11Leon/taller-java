@@ -1,0 +1,178 @@
+<svg viewBox="0 0 950 560" width="1900" height="1120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <linearGradient id="gradCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="gradDomain" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#fde68a"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowDotted" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669"/>
+    </marker>
+  </defs>
+
+  <!-- Fondo / Límites -->
+  <rect x="5" y="5" width="940" height="550" rx="12" fill="#fafafa" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- ================= CAPA EXTERIOR IZQUIERDA: CLIENTES ================= -->
+  <rect x="25" y="40" width="160" height="470" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="4" stroke-width="1.5"/>
+  <text x="105" y="65" text-anchor="middle" font-weight="bold" fill="#334155" font-size="11">CLIENTES EXTERNOS</text>
+
+  <!-- Cliente Web / Swagger -->
+  <rect x="40" y="90" width="130" height="70" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="105" y="115" text-anchor="middle" font-weight="bold" fill="#0f172a" font-size="10.5">Cliente Web / REST</text>
+  <text x="105" y="132" text-anchor="middle" fill="#64748b" font-size="9">Swagger UI 3</text>
+  <text x="105" y="146" text-anchor="middle" fill="#2563eb" font-size="8.5">http://localhost:3000</text>
+
+  <!-- Operador CLI -->
+  <rect x="40" y="360" width="130" height="70" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="105" y="388" text-anchor="middle" font-weight="bold" fill="#0f172a" font-size="10.5">Operador CLI</text>
+  <text x="105" y="405" text-anchor="middle" fill="#64748b" font-size="9">Consola Interactiva</text>
+  <text x="105" y="419" text-anchor="middle" fill="#059669" font-size="8.5">docker compose run cli</text>
+
+  <!-- ================= ADAPTADORES DE ENTRADA (DRIVING) ================= -->
+  <rect x="210" y="40" width="170" height="470" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="295" y="65" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="11">ADAPTADORES ENTRADA</text>
+
+  <!-- rest-input-adapter -->
+  <rect x="220" y="85" width="150" height="185" rx="6" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="295" y="105" text-anchor="middle" font-weight="bold" fill="#1e40af" font-size="10">rest-input-adapter</text>
+  <line x1="230" y1="112" x2="360" y2="112" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="230" y="128" fill="#334155" font-size="8.5">• PersonaControllerV1</text>
+  <text x="230" y="143" fill="#334155" font-size="8.5">• ProfesionControllerV1</text>
+  <text x="230" y="158" fill="#334155" font-size="8.5">• TelefonoControllerV1</text>
+  <text x="230" y="173" fill="#334155" font-size="8.5">• EstudiosControllerV1</text>
+  <text x="230" y="193" fill="#64748b" font-size="8">• *Request / *Response</text>
+  <text x="230" y="208" fill="#64748b" font-size="8">• GlobalExceptionHandler</text>
+  <text x="230" y="223" fill="#64748b" font-size="8">• Bean Validation (@Valid)</text>
+  <rect x="230" y="235" width="130" height="24" rx="4" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="295" y="251" text-anchor="middle" font-weight="600" fill="#1d4ed8" font-size="8.5">PersonaInputAdapterRest</text>
+
+  <!-- cli-input-adapter -->
+  <rect x="220" y="315" width="150" height="175" rx="6" fill="#ffffff" stroke="#10b981" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="295" y="335" text-anchor="middle" font-weight="bold" fill="#065f46" font-size="10">cli-input-adapter</text>
+  <line x1="230" y1="342" x2="360" y2="342" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="230" y="358" fill="#334155" font-size="8.5">• MenuPrincipal</text>
+  <text x="230" y="373" fill="#334155" font-size="8.5">• PersonaMenu</text>
+  <text x="230" y="388" fill="#334155" font-size="8.5">• ProfesionMenu</text>
+  <text x="230" y="403" fill="#334155" font-size="8.5">• TelefonoMenu</text>
+  <text x="230" y="418" fill="#334155" font-size="8.5">• EstudiosMenu</text>
+  <text x="230" y="438" fill="#64748b" font-size="8">• *ModelCli &amp; *MapperCli</text>
+  <rect x="230" y="452" width="130" height="24" rx="4" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="295" y="468" text-anchor="middle" font-weight="600" fill="#047857" font-size="8.5">PersonaInputAdapterCli</text>
+
+  <!-- ================= NÚCLEO HEXAGONAL (APPLICATION & DOMAIN) ================= -->
+  <!-- Hexágono Exterior: Aplicación -->
+  <polygon points="390,275 410,50 685,50 705,275 685,500 410,500" fill="url(#gradCore)" stroke="#2563eb" stroke-width="2.5" filter="url(#shadow)"/>
+  <text x="548" y="72" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="11">NÚCLEO DEL HEXÁGONO (application &amp; domain)</text>
+
+  <!-- Puertos de Entrada (Inbound) -->
+  <rect x="425" y="115" width="115" height="130" rx="5" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="482" y="132" text-anchor="middle" font-weight="bold" fill="#1d4ed8" font-size="9">PUERTOS ENTRADA</text>
+  <text x="482" y="144" text-anchor="middle" fill="#64748b" font-size="7.5">&lt;&lt;interface&gt;&gt;</text>
+  <line x1="432" y1="150" x2="532" y2="150" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="432" y="166" fill="#1e293b" font-size="8">• PersonInputPort</text>
+  <text x="432" y="183" fill="#1e293b" font-size="8">• ProfessionInputPort</text>
+  <text x="432" y="200" fill="#1e293b" font-size="8">• PhoneInputPort</text>
+  <text x="432" y="217" fill="#1e293b" font-size="8">• StudyInputPort</text>
+  <text x="482" y="235" text-anchor="middle" font-style="italic" fill="#2563eb" font-size="7.5">6 métodos c/u</text>
+
+  <!-- Casos de Uso (Application Services) -->
+  <rect x="440" y="275" width="220" height="85" rx="6" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="550" y="295" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="9.5">CASOS DE USO (Use Cases / Services)</text>
+  <line x1="450" y1="302" x2="650" y2="302" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="455" y="320" fill="#0f172a" font-size="8.5">• PersonUseCase</text>
+  <text x="560" y="320" fill="#0f172a" font-size="8.5">• ProfessionUseCase</text>
+  <text x="455" y="340" fill="#0f172a" font-size="8.5">• PhoneUseCase</text>
+  <text x="560" y="340" fill="#0f172a" font-size="8.5">• StudyUseCase</text>
+
+  <!-- Hexágono Central: Dominio Puro -->
+  <rect x="475" y="380" width="150" height="95" rx="8" fill="url(#gradDomain)" stroke="#d97706" stroke-width="2"/>
+  <text x="550" y="400" text-anchor="middle" font-weight="bold" fill="#92400e" font-size="10">DOMINIO PURO (domain)</text>
+  <text x="550" y="413" text-anchor="middle" fill="#b45309" font-size="8">Sin librerías externas / POJOs</text>
+  <line x1="485" y1="418" x2="615" y2="418" stroke="#fcd34d" stroke-width="1"/>
+  <text x="490" y="434" fill="#78350f" font-size="8.5">• Person</text>
+  <text x="560" y="434" fill="#78350f" font-size="8.5">• Profession</text>
+  <text x="490" y="452" fill="#78350f" font-size="8.5">• Phone</text>
+  <text x="560" y="452" fill="#78350f" font-size="8.5">• Study</text>
+  <text x="525" y="468" text-anchor="middle" fill="#78350f" font-size="8">• Gender (ENUM: M, F, OTHER)</text>
+
+  <!-- Puertos de Salida (Outbound) -->
+  <rect x="560" y="115" width="115" height="130" rx="5" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="617" y="132" text-anchor="middle" font-weight="bold" fill="#1d4ed8" font-size="9">PUERTOS SALIDA</text>
+  <text x="617" y="144" text-anchor="middle" fill="#64748b" font-size="7.5">&lt;&lt;interface&gt;&gt;</text>
+  <line x1="567" y1="150" x2="667" y2="150" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="567" y="166" fill="#1e293b" font-size="8">• PersonOutputPort</text>
+  <text x="567" y="183" fill="#1e293b" font-size="8">• ProfessionOutputPort</text>
+  <text x="567" y="200" fill="#1e293b" font-size="8">• PhoneOutputPort</text>
+  <text x="567" y="217" fill="#1e293b" font-size="8">• StudyOutputPort</text>
+  <text x="617" y="235" text-anchor="middle" font-style="italic" fill="#2563eb" font-size="7.5">Contratos CRUD</text>
+
+  <!-- ================= ADAPTADORES DE SALIDA (DRIVEN) ================= -->
+  <rect x="715" y="40" width="205" height="470" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="817" y="65" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="11">ADAPTADORES SALIDA (Driven)</text>
+
+  <!-- maria-output-adapter -->
+  <rect x="725" y="85" width="185" height="185" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="817" y="105" text-anchor="middle" font-weight="bold" fill="#0369a1" font-size="10">maria-output-adapter (SQL)</text>
+  <line x1="735" y1="112" x2="900" y2="112" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="735" y="127" fill="#334155" font-size="8">• PersonOutputAdapterMaria</text>
+  <text x="735" y="140" fill="#334155" font-size="8">• ProfessionOutputAdapterMaria</text>
+  <text x="735" y="153" fill="#334155" font-size="8">• PhoneOutputAdapterMaria</text>
+  <text x="735" y="166" fill="#334155" font-size="8">• StudyOutputAdapterMaria</text>
+  <text x="735" y="183" fill="#64748b" font-size="8">• *RepositoryMaria (Spring Data JPA)</text>
+  <text x="735" y="196" fill="#64748b" font-size="8">• Mappers (Shallow copy anti-ciclos)</text>
+  <rect x="735" y="208" width="165" height="50" rx="4" fill="#f0f9ff" stroke="#bae6fd"/>
+  <text x="817" y="226" text-anchor="middle" font-weight="bold" fill="#0284c7" font-size="9.5">MariaDB 10.6 (Docker)</text>
+  <text x="817" y="240" text-anchor="middle" fill="#0369a1" font-size="8">Host Port: 3307 | DB: persona_db</text>
+  <text x="817" y="252" text-anchor="middle" fill="#64748b" font-size="7.5">Tablas: persona, profesion, telefono, estudios</text>
+
+  <!-- mongo-output-adapter -->
+  <rect x="725" y="300" width="185" height="195" rx="6" fill="#ffffff" stroke="#059669" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="817" y="320" text-anchor="middle" font-weight="bold" fill="#065f46" font-size="10">mongo-output-adapter (NoSQL)</text>
+  <line x1="735" y1="327" x2="900" y2="327" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="735" y="342" fill="#334155" font-size="8">• PersonOutputAdapterMongo</text>
+  <text x="735" y="355" fill="#334155" font-size="8">• ProfessionOutputAdapterMongo</text>
+  <text x="735" y="368" fill="#334155" font-size="8">• PhoneOutputAdapterMongo</text>
+  <text x="735" y="381" fill="#334155" font-size="8">• StudyOutputAdapterMongo</text>
+  <text x="735" y="398" fill="#64748b" font-size="8">• *RepositoryMongo (Spring Data Mongo)</text>
+  <text x="735" y="411" fill="#64748b" font-size="8">• @DocumentReference &amp; IDs compuestos</text>
+  <rect x="735" y="423" width="165" height="60" rx="4" fill="#ecfdf5" stroke="#a7f3d0"/>
+  <text x="817" y="443" text-anchor="middle" font-weight="bold" fill="#059669" font-size="9.5">MongoDB 7.0 / 5.0 (Docker)</text>
+  <text x="817" y="457" text-anchor="middle" fill="#065f46" font-size="8">Host Port: 27017 | DB: persona_db</text>
+  <text x="817" y="471" text-anchor="middle" fill="#64748b" font-size="7.5">Colecciones BSON independientes</text>
+
+  <!-- ================= CONEXIONES Y FLECHAS ================= -->
+  <!-- Clientes -> Adaptadores Entrada -->
+  <line x1="170" y1="125" x2="218" y2="140" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="170" y1="395" x2="218" y2="395" stroke="#059669" stroke-width="2" marker-end="url(#arrowDotted)"/>
+
+  <!-- Adaptadores Entrada -> Puertos Entrada -->
+  <path d="M 370 245 C 390 245, 395 180, 420 180" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 370 465 C 400 465, 395 210, 420 200" fill="none" stroke="#059669" stroke-width="2" marker-end="url(#arrowDotted)"/>
+
+  <!-- Puertos Entrada -> Casos de Uso -->
+  <line x1="482" y1="245" x2="520" y2="275" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Casos de Uso <-> Dominio -->
+  <line x1="550" y1="360" x2="550" y2="378" stroke="#d97706" stroke-width="2"/>
+
+  <!-- Casos de Uso -> Puertos Salida -->
+  <line x1="575" y1="275" x2="610" y2="248" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Adaptadores Salida implementan Puertos Salida (DIP: Flecha apunta hacia el hexágono) -->
+  <path d="M 725 150 C 695 150, 690 170, 678 170" fill="none" stroke="#0284c7" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow)"/>
+  <path d="M 725 350 C 695 350, 690 190, 678 190" fill="none" stroke="#059669" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrowDotted)"/>
+
+  <!-- Nota de DIP -->
+  <rect x="420" y="515" width="260" height="26" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="550" y="532" text-anchor="middle" font-weight="bold" fill="#b45309" font-size="8.5">Principio DIP: Todas las dependencias apuntan al centro</text>
+</svg>

@@ -16,6 +16,7 @@
 * **Docente:** Andrés Sánchez
 * **Fecha de Entrega:** Noviembre de 2026
 * **Repositorio Oficial:** [https://github.com/Nicolas11Leon/taller-java](https://github.com/Nicolas11Leon/taller-java)
+* **Documento Oficial en Formato PDF:** [DOCUMENTO_LABORATORIO_2.pdf](./DOCUMENTO_LABORATORIO_2.pdf)
 * **TAG de Entrega:** [`v1.0.0`](https://github.com/Nicolas11Leon/taller-java/releases/tag/v1.0.0)
 
 ---
@@ -55,6 +56,8 @@ Mediante inyección de dependencias en tiempo de ejecución, el sistema permite 
 ## 3. Diseño de la Arquitectura del Sistema
 
 ### 3.1 Diagrama de Arquitectura Hexagonal Detallado
+
+![Figura 1: Arquitectura Hexagonal Canónica](./docs/diagrams/figura1_arquitectura_hexagonal.png)
 
 El siguiente diagrama ilustra formalmente cómo los componentes del sistema se organizan en torno al hexágono central, destacando la separación entre adaptadores de entrada, puertos, casos de uso, dominio y adaptadores de salida:
 
