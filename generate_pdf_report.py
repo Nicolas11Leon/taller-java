@@ -633,7 +633,7 @@ Se ejecutó la suite de pruebas automáticas en consola contra los servicios des
 <div class="page-break"></div>
 
 <!-- ================= 7. CONCLUSIONES Y REFERENCIAS ================= -->
-<h1>7. Conclusiones y Lecciones Aprendidas</h1>
+<h1>8. Conclusiones y Lecciones Aprendidas</h1>
 
 <ol>
   <li>Desacoplamiento Efectivo de la Lógica de Negocio:
@@ -652,7 +652,7 @@ Se ejecutó la suite de pruebas automáticas en consola contra los servicios des
 
 <hr style="margin-top: 30px; border: 0; border-top: 1px solid #cbd5e1;">
 
-<h1>8. Referencias Bibliográficas</h1>
+<h1>9. Referencias Bibliográficas</h1>
 
 <ol style="font-size: 9.5pt;">
   <li>Cockburn, A. (2005). <em>Hexagonal Architecture (Ports and Adapters)</em>. Alistair Cockburn Patterns Blog. Recuperado de <a href="https://alistair.cockburn.us/hexagonal-architecture/">https://alistair.cockburn.us/hexagonal-architecture/</a></li>
