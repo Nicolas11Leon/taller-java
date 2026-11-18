@@ -1,161 +1,323 @@
-# Diagramas de Flujo por Caso de Uso — PersonAPP
+# Diagramas de Flujo Individuales por Caso de Uso (30 Diagramas)
 
-Este documento presenta los diagramas de flujo detallados para el enrutamiento hexagonal dinámico y cada uno de los cuatro Casos de Uso del núcleo de la aplicación (`PersonUseCase`, `ProfessionUseCase`, `PhoneUseCase` y `StudyUseCase`).
+Cada operación del sistema (6 métodos base por entidad + navegación de relaciones) cuenta con su propio diagrama de flujo independiente.
+
 
 ---
 
-## 1. Flujo General de Selección Dinámica de Base de Datos (Adaptador de Entrada)
+## Módulo Persona (`PersonUseCase`)
 
-Aplica a **todos** los casos de uso antes de invocar cualquier operación del núcleo:
-
+### 1. Persona — `findAll()` (Listar todos)
 ```mermaid
 flowchart TD
-    A(["Inicio: Petición HTTP / Opción CLI"]) --> B["Leer parámetro database (MARIA o MONGO)"]
-    B --> C{"¿database == MARIA?"}
-    C -- "Sí" --> D["Inyectar OutputAdapterMaria en UseCase"]
-    C -- "No" --> E{"¿database == MONGO?"}
-    E -- "Sí" --> F["Inyectar OutputAdapterMongo en UseCase"]
-    E -- "No" --> G["Lanzar InvalidOptionException (400 Bad Request)"]
-    D --> H["Ejecutar método del InputPort (UseCase)"]
-    F --> H
-    H --> I(["Retornar DTO / Respuesta al Cliente"])
-    G --> I
+    A(["Inicio: GET /api/v1/persona/{database}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["PersonUseCase.findAll()"]
+    C --> D["outputPort.find()"]
+    D --> E(["Retornar List<Person> (200 OK)"])
 ```
 
----
-
-## 2. Caso de Uso: Persona (`PersonUseCase`)
-
+### 2. Persona — `findOne(cc)` (Buscar por ID)
 ```mermaid
 flowchart TD
-    Start(["PersonUseCase"]) --> Op{"Operación solicitada"}
-
-    %% CREATE
-    Op -- "create(person)" --> C1["Validar DTO (@Valid) y regla de edad"]
-    C1 --> C2["personOutputPort.save(person)"]
-    C2 --> C3(["Retornar Person creada (201/200)"])
-
-    %% EDIT
-    Op -- "edit(cc, person)" --> E1["personOutputPort.findById(cc)"]
-    E1 --> E2{"¿Existe la persona?"}
-    E2 -- "No" --> E3["Lanzar NoexistException (404)"]
-    E2 -- "Sí" --> E4["personOutputPort.save(person)"]
-    E4 --> E5(["Retornar Person actualizada"])
-
-    %% DROP
-    Op -- "drop(cc)" --> D1["personOutputPort.findById(cc)"]
-    D1 --> D2{"¿Existe la persona?"}
-    D2 -- "No" --> D3["Lanzar NoexistException (404)"]
-    D2 -- "Sí" --> D4["personOutputPort.delete(cc)"]
-    D4 --> D5(["Retornar true (Eliminada)"])
-
-    %% FIND ONE
-    Op -- "findOne(cc)" --> F1["personOutputPort.findById(cc)"]
-    F1 --> F2{"¿Encontrada?"}
-    F2 -- "No" --> F3["Lanzar NoexistException (404)"]
-    F2 -- "Sí" --> F4(["Retornar Person"])
-
-    %% FIND ALL & COUNT
-    Op -- "findAll()" --> FA1["personOutputPort.find()"]
-    FA1 --> FA2(["Retornar List<Person>"])
-    Op -- "count()" --> CT1["personOutputPort.find().size()"]
-    CT1 --> CT2(["Retornar Integer"])
+    A(["Inicio: GET /api/v1/persona/{database}/{cc}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(cc)"]
+    C --> D{"¿Existe?"}
+    D -- "Sí" --> E(["Retornar Person (200 OK)"])
+    D -- "No" --> F(["Lanzar NoexistException (404 Not Found)"])
 ```
 
----
-
-## 3. Caso de Uso: Profesión (`ProfessionUseCase`)
-
+### 3. Persona — `count()` (Contar registros)
 ```mermaid
 flowchart TD
-    Start(["ProfessionUseCase"]) --> Op{"Operación solicitada"}
-
-    Op -- "create(profession)" --> C1["professionOutputPort.save(profession)"]
-    C1 --> C2(["Retornar Profession creada"])
-
-    Op -- "edit(id, profession)" --> E1["professionOutputPort.findById(id)"]
-    E1 --> E2{"¿Existe?"}
-    E2 -- "No" --> E3["Lanzar NoexistException (404)"]
-    E2 -- "Sí" --> E4["professionOutputPort.save(profession)"]
-    E4 --> E5(["Retornar Profession actualizada"])
-
-    Op -- "drop(id)" --> D1["professionOutputPort.findById(id)"]
-    D1 --> D2{"¿Existe?"}
-    D2 -- "No" --> D3["Lanzar NoexistException (404)"]
-    D2 -- "Sí" --> D4["professionOutputPort.delete(id)"]
-    D4 --> D5(["Retornar true"])
-
-    Op -- "findOne(id)" --> F1["professionOutputPort.findById(id)"]
-    F1 --> F2{"¿Encontrada?"}
-    F2 -- "No" --> F3["Lanzar NoexistException (404)"]
-    F2 -- "Sí" --> F4(["Retornar Profession"])
-
-    Op -- "findAll() / count()" --> FA1["professionOutputPort.find()"]
-    FA1 --> FA2(["Retornar Lista o Conteo"])
+    A(["Inicio: GET /api/v1/persona/{database}/count"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["PersonUseCase.count()"]
+    C --> D["outputPort.find().size()"]
+    D --> E(["Retornar Integer (200 OK)"])
 ```
 
----
-
-## 4. Caso de Uso: Teléfono (`PhoneUseCase`)
-
+### 4. Persona — `create(Person)` (Crear registro)
 ```mermaid
 flowchart TD
-    Start(["PhoneUseCase"]) --> Op{"Operación solicitada"}
-
-    Op -- "create(phone)" --> C1["Validar número, operador y dueño (cc)"]
-    C1 --> C2["phoneOutputPort.save(phone)"]
-    C2 --> C3(["Retornar Phone creado"])
-
-    Op -- "edit(num, phone)" --> E1["phoneOutputPort.findById(num)"]
-    E1 --> E2{"¿Existe el número?"}
-    E2 -- "No" --> E3["Lanzar NoexistException (404)"]
-    E2 -- "Sí" --> E4["phoneOutputPort.save(phone)"]
-    E4 --> E5(["Retornar Phone actualizado"])
-
-    Op -- "drop(num)" --> D1["phoneOutputPort.findById(num)"]
-    D1 --> D2{"¿Existe el número?"}
-    D2 -- "No" --> D3["Lanzar NoexistException (404)"]
-    D2 -- "Sí" --> D4["phoneOutputPort.delete(num)"]
-    D4 --> D5(["Retornar true"])
-
-    Op -- "findOne(num)" --> F1["phoneOutputPort.findById(num)"]
-    F1 --> F2{"¿Encontrado?"}
-    F2 -- "No" --> F3["Lanzar NoexistException (404)"]
-    F2 -- "Sí" --> F4(["Retornar Phone"])
-
-    Op -- "findAll() / count()" --> FA1["phoneOutputPort.find()"]
-    FA1 --> FA2(["Retornar Lista o Conteo"])
+    A(["Inicio: POST /api/v1/persona"]) --> B{"¿Payload @Valid?"}
+    B -- "No" --> C(["GlobalExceptionHandler (400 Bad Request)"])
+    B -- "Sí" --> D["Inyectar OutputAdapter (MARIA o MONGO)"]
+    D --> E["outputPort.save(Person)"]
+    E --> F(["Retornar Person creado (200/201)"])
 ```
 
----
-
-## 5. Caso de Uso: Estudios (`StudyUseCase`)
-
+### 5. Persona — `edit(cc, Person)` (Editar registro)
 ```mermaid
 flowchart TD
-    Start(["StudyUseCase"]) --> Op{"Operación solicitada"}
+    A(["Inicio: PUT /api/v1/persona"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(cc)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.save(Person)"]
+    F --> G(["Retornar Person actualizado (200 OK)"])
+```
 
-    Op -- "create(study)" --> C1["Validar llave compuesta (id_prof + cc_per), fecha y universidad"]
-    C1 --> C2["studyOutputPort.save(study)"]
-    C2 --> C3(["Retornar Study creado"])
+### 6. Persona — `drop(cc)` (Eliminar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: DELETE /api/v1/persona/{database}/{cc}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(cc)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.delete(cc)"]
+    F --> G(["Retornar true (200 OK)"])
+```
 
-    Op -- "edit(idProf, ccPer, study)" --> E1["studyOutputPort.findById(idProf, ccPer)"]
-    E1 --> E2{"¿Existe el registro?"}
-    E2 -- "No" --> E3["Lanzar NoexistException (404)"]
-    E2 -- "Sí" --> E4["studyOutputPort.save(study)"]
-    E4 --> E5(["Retornar Study actualizado"])
+### 7. Persona — `findPhones(cc)` (Consultar Teléfonos de una Persona)
+```mermaid
+flowchart TD
+    A(["Inicio: GET relación findPhones"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(cc)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F(["Retornar List<Phone> (200 OK)"])
+```
 
-    Op -- "drop(idProf, ccPer)" --> D1["studyOutputPort.findById(idProf, ccPer)"]
-    D1 --> D2{"¿Existe el registro?"}
-    D2 -- "No" --> D3["Lanzar NoexistException (404)"]
-    D2 -- "Sí" --> D4["studyOutputPort.delete(idProf, ccPer)"]
-    D4 --> D5(["Retornar true"])
+### 8. Persona — `findStudies(cc)` (Consultar Estudios de una Persona)
+```mermaid
+flowchart TD
+    A(["Inicio: GET relación findStudies"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(cc)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F(["Retornar List<Study> (200 OK)"])
+```
 
-    Op -- "findOne(idProf, ccPer)" --> F1["studyOutputPort.findById(idProf, ccPer)"]
-    F1 --> F2{"¿Encontrado?"}
-    F2 -- "No" --> F3["Lanzar NoexistException (404)"]
-    F2 -- "Sí" --> F4(["Retornar Study"])
 
-    Op -- "findAll() / count()" --> FA1["studyOutputPort.find()"]
-    FA1 --> FA2(["Retornar Lista o Conteo"])
+---
+
+## Módulo Profesión (`ProfessionUseCase`)
+
+### 9. Profesión — `findAll()` (Listar todos)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/profesión/{database}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["ProfessionUseCase.findAll()"]
+    C --> D["outputPort.find()"]
+    D --> E(["Retornar List<Profession> (200 OK)"])
+```
+
+### 10. Profesión — `findOne(id)` (Buscar por ID)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/profesión/{database}/{id}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(id)"]
+    C --> D{"¿Existe?"}
+    D -- "Sí" --> E(["Retornar Profession (200 OK)"])
+    D -- "No" --> F(["Lanzar NoexistException (404 Not Found)"])
+```
+
+### 11. Profesión — `count()` (Contar registros)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/profesión/{database}/count"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["ProfessionUseCase.count()"]
+    C --> D["outputPort.find().size()"]
+    D --> E(["Retornar Integer (200 OK)"])
+```
+
+### 12. Profesión — `create(Profession)` (Crear registro)
+```mermaid
+flowchart TD
+    A(["Inicio: POST /api/v1/profesión"]) --> B{"¿Payload @Valid?"}
+    B -- "No" --> C(["GlobalExceptionHandler (400 Bad Request)"])
+    B -- "Sí" --> D["Inyectar OutputAdapter (MARIA o MONGO)"]
+    D --> E["outputPort.save(Profession)"]
+    E --> F(["Retornar Profession creado (200/201)"])
+```
+
+### 13. Profesión — `edit(id, Profession)` (Editar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: PUT /api/v1/profesión"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(id)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.save(Profession)"]
+    F --> G(["Retornar Profession actualizado (200 OK)"])
+```
+
+### 14. Profesión — `drop(id)` (Eliminar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: DELETE /api/v1/profesión/{database}/{id}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(id)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.delete(id)"]
+    F --> G(["Retornar true (200 OK)"])
+```
+
+### 15. Profesión — `findStudies(id)` (Consultar Estudios de una Profesión)
+```mermaid
+flowchart TD
+    A(["Inicio: GET relación findStudies"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(id)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F(["Retornar List<Study> (200 OK)"])
+```
+
+
+---
+
+## Módulo Teléfono (`PhoneUseCase`)
+
+### 16. Teléfono — `findAll()` (Listar todos)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/teléfono/{database}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["PhoneUseCase.findAll()"]
+    C --> D["outputPort.find()"]
+    D --> E(["Retornar List<Phone> (200 OK)"])
+```
+
+### 17. Teléfono — `findOne(num)` (Buscar por ID)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/teléfono/{database}/{num}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(num)"]
+    C --> D{"¿Existe?"}
+    D -- "Sí" --> E(["Retornar Phone (200 OK)"])
+    D -- "No" --> F(["Lanzar NoexistException (404 Not Found)"])
+```
+
+### 18. Teléfono — `count()` (Contar registros)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/teléfono/{database}/count"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["PhoneUseCase.count()"]
+    C --> D["outputPort.find().size()"]
+    D --> E(["Retornar Integer (200 OK)"])
+```
+
+### 19. Teléfono — `create(Phone)` (Crear registro)
+```mermaid
+flowchart TD
+    A(["Inicio: POST /api/v1/teléfono"]) --> B{"¿Payload @Valid?"}
+    B -- "No" --> C(["GlobalExceptionHandler (400 Bad Request)"])
+    B -- "Sí" --> D["Inyectar OutputAdapter (MARIA o MONGO)"]
+    D --> E["outputPort.save(Phone)"]
+    E --> F(["Retornar Phone creado (200/201)"])
+```
+
+### 20. Teléfono — `edit(num, Phone)` (Editar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: PUT /api/v1/teléfono"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(num)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.save(Phone)"]
+    F --> G(["Retornar Phone actualizado (200 OK)"])
+```
+
+### 21. Teléfono — `drop(num)` (Eliminar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: DELETE /api/v1/teléfono/{database}/{num}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(num)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.delete(num)"]
+    F --> G(["Retornar true (200 OK)"])
+```
+
+### 22. Teléfono — `findOwner(num)` (Consultar Dueño de un Teléfono)
+```mermaid
+flowchart TD
+    A(["Inicio: GET relación findOwner"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(num)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F(["Retornar Person (200 OK)"])
+```
+
+
+---
+
+## Módulo Estudios (`StudyUseCase`)
+
+### 23. Estudios — `findAll()` (Listar todos)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/estudios/{database}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["StudyUseCase.findAll()"]
+    C --> D["outputPort.find()"]
+    D --> E(["Retornar List<Study> (200 OK)"])
+```
+
+### 24. Estudios — `findOne(idProf, ccPer)` (Buscar por ID)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/estudios/{database}/{idProf, ccPer}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(idProf, ccPer)"]
+    C --> D{"¿Existe?"}
+    D -- "Sí" --> E(["Retornar Study (200 OK)"])
+    D -- "No" --> F(["Lanzar NoexistException (404 Not Found)"])
+```
+
+### 25. Estudios — `count()` (Contar registros)
+```mermaid
+flowchart TD
+    A(["Inicio: GET /api/v1/estudios/{database}/count"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["StudyUseCase.count()"]
+    C --> D["outputPort.find().size()"]
+    D --> E(["Retornar Integer (200 OK)"])
+```
+
+### 26. Estudios — `create(Study)` (Crear registro)
+```mermaid
+flowchart TD
+    A(["Inicio: POST /api/v1/estudios"]) --> B{"¿Payload @Valid?"}
+    B -- "No" --> C(["GlobalExceptionHandler (400 Bad Request)"])
+    B -- "Sí" --> D["Inyectar OutputAdapter (MARIA o MONGO)"]
+    D --> E["outputPort.save(Study)"]
+    E --> F(["Retornar Study creado (200/201)"])
+```
+
+### 27. Estudios — `edit(idProf, ccPer, Study)` (Editar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: PUT /api/v1/estudios"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(idProf, ccPer)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.save(Study)"]
+    F --> G(["Retornar Study actualizado (200 OK)"])
+```
+
+### 28. Estudios — `drop(idProf, ccPer)` (Eliminar registro)
+```mermaid
+flowchart TD
+    A(["Inicio: DELETE /api/v1/estudios/{database}/{idProf, ccPer}"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(idProf, ccPer)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F["outputPort.delete(idProf, ccPer)"]
+    F --> G(["Retornar true (200 OK)"])
+```
+
+### 29. Estudios — `findPerson(idProf, ccPer)` (Consultar Persona de un Estudio)
+```mermaid
+flowchart TD
+    A(["Inicio: GET relación findPerson"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(idProf, ccPer)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F(["Retornar Person (200 OK)"])
+```
+
+### 30. Estudios — `findProfession(idProf, ccPer)` (Consultar Profesión de un Estudio)
+```mermaid
+flowchart TD
+    A(["Inicio: GET relación findProfession"]) --> B["Inyectar OutputAdapter (MARIA o MONGO)"]
+    B --> C["outputPort.findById(idProf, ccPer)"]
+    C --> D{"¿Existe?"}
+    D -- "No" --> E(["Lanzar NoexistException (404 Not Found)"])
+    D -- "Sí" --> F(["Retornar Profession (200 OK)"])
 ```
